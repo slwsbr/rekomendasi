@@ -1,6 +1,6 @@
 # Laporan Proyek Machine Learning - Salwa Sabira
 
-## **1. Project Overview**
+## **Project Overview**
 
 Perkembangan industri literasi digital dan peningkatan minat baca masyarakat mendorong kebutuhan akan sistem rekomendasi buku yang efektif. Dalam platform seperti Goodreads, ribuan buku tersedia, dan pengguna seringkali mengalami kesulitan memilih bacaan yang sesuai minat mereka. Sistem rekomendasi dapat membantu pengguna menemukan buku yang relevan berdasarkan preferensi atau minat sebelumnya.
 
@@ -12,7 +12,7 @@ Referensi:
 * Jannach, D., & Adomavicius, G. (2016). Recommendation systems: Challenges, insights and research opportunities. *Elsevier, Data & Knowledge Engineering*.
 * Ricci, F., Rokach, L., & Shapira, B. (2011). *Introduction to Recommender Systems Handbook*. Springer.
 
-## **2. Business Understanding**
+## **Business Understanding**
 
 ### **Problem Statements**
 
@@ -32,73 +32,94 @@ Referensi:
 * **Pendekatan 2: Collaborative Filtering (Untuk Pengembangan Lanjutan)**
   Mengandalkan data interaksi pengguna (rating atau ulasan) untuk menyarankan buku serupa yang dinikmati oleh pengguna lain.
 
-## **3. Data Understanding**
+## **Data Understanding**
 
-Dataset yang digunakan berasal dari Kaggle dan dapat diakses melalui tautan berikut:
+Dataset diambil dari platform Kaggle:
 [https://www.kaggle.com/datasets/jealousleopard/goodreadsbooks](https://www.kaggle.com/datasets/jealousleopard/goodreadsbooks)
 
-Setelah proses cleaning, data terdiri dari 11.119 buku dengan informasi sebagai berikut:
+Dataset berisi informasi tentang 11.119 buku dengan 12 kolom, antara lain:
 
-* `bookID`: ID unik untuk buku.
-* `title`: Judul buku.
-* `authors`: Nama penulis.
-* `average_rating`: Rata-rata rating dari pengguna.
-* `isbn`, `isbn13`: Nomor ISBN.
-* `language_code`: Kode bahasa buku.
-* `num_pages`: Jumlah halaman.
-* `ratings_count`: Jumlah total rating.
-* `text_reviews_count`: Jumlah ulasan teks.
-* `publication_date`: Tanggal terbit.
-* `publisher`: Nama penerbit.
+* `bookID`: ID unik buku
+* `title`: Judul buku
+* `authors`: Penulis
+* `average_rating`: Rata-rata rating buku
+* `isbn`, `isbn13`: Nomor ISBN
+* `language_code`: Bahasa buku
+* `num_pages`: Jumlah halaman
+* `ratings_count`: Jumlah rating
+* `text_reviews_count`: Jumlah ulasan teks
+* `publication_date`: Tanggal terbit
+* `publisher`: Nama penerbit
 
-### **EDA (Exploratory Data Analysis)**
+### **Pemeriksaan Data**
 
-Beberapa visualisasi dilakukan:
+* **Missing values**: Telah dilakukan pengecekan menggunakan `df.isna().sum()`, dan **tidak ditemukan missing values** di seluruh kolom.
+* **Duplikat**: Telah dilakukan pengecekan menggunakan `df.duplicated().sum()`, dan **tidak ditemukan data duplikat**.
+* **Distribusi bahasa**: Data didominasi oleh buku berbahasa Inggris (kode `en` dan `eng`), yang difilter untuk fokus model.
+* **Distribusi ratings**: Mayoritas buku memiliki rating antara 3.5–4.5.
+* **Distribusi jumlah ulasan** dan rating berskala log karena nilai sangat bervariasi antar buku.
 
-* Distribusi `average_rating` menunjukkan mayoritas buku memiliki rating antara 3,5 hingga 4,5.
-* Distribusi `ratings_count` dan `text_reviews_count` berskala log karena distribusinya sangat miring.
-* Bahasa dominan adalah bahasa Inggris (`en` dan `eng`).
-* Penulis paling produktif dan penerbit terbanyak juga dianalisis.
+---
 
-## **4. Data Preparation**
+## **Data Preparation**
 
-Beberapa langkah data preparation dilakukan:
+Berikut adalah tahapan preprocessing data:
 
-* **Menghapus kolom tidak relevan**: `bookID`, `isbn`, `isbn13`, `publication_date`, `publisher`, `num_pages`.
-* **Menghapus data duplikat** dan **memastikan tidak ada missing values**.
-* **Filter hanya buku berbahasa Inggris** (`en`, `eng`) untuk konsistensi.
-* **Normalisasi rating**: hanya menyertakan buku dengan rating antara 0 dan 5.
-* **Pembuatan kolom fitur gabungan (`combined_features`)** untuk kebutuhan TF-IDF.
+1. **Filter bahasa**
 
-```python
-df['combined_features'] = (
-    df['title'] + ' ' +
-    df['authors'] + ' ' +
-    df['language_code'] + ' ' +
-    df['average_rating'].astype(str) + ' ' +
-    df['ratings_count'].astype(str) + ' ' +
-    df['text_reviews_count'].astype(str)
-)
-```
+   * Hanya buku dengan `language_code` = `'en'` atau `'eng'` yang disertakan untuk memastikan konsistensi konten.
 
-## **5. Modeling and Result**
+2. **Menghapus kolom tidak relevan**
 
-### **Pendekatan Content-Based Filtering**
+   * Kolom seperti `bookID`, `isbn`, `isbn13`, `publication_date`, `publisher`, `num_pages` dihapus karena tidak berkontribusi terhadap pemodelan.
 
-Model menggunakan pendekatan:
+3. **Normalisasi format numerik**
 
-* TF-IDF Vectorization untuk mengubah teks menjadi vektor.
-* Cosine similarity untuk menghitung kemiripan antar buku.
-* Fungsi `recommend_books(title)` untuk menghasilkan 10 buku rekomendasi teratas berdasarkan kemiripan konten.
+   * Kolom `average_rating`, `ratings_count`, dan `text_reviews_count` dipastikan bertipe numerik.
 
-**Contoh Output**
-Rekomendasi untuk buku *The Hobbit*:
+4. **Pembuatan kolom gabungan fitur (`combined_features`)**
+
+   * Digabungkan `title`, `authors`, `language_code`, dan nilai numerik penting menjadi satu kolom teks deskriptif.
+
+   ```python
+   df['combined_features'] = (
+       df['title'] + ' ' +
+       df['authors'] + ' ' +
+       df['language_code'] + ' ' +
+       df['average_rating'].astype(str) + ' ' +
+       df['ratings_count'].astype(str) + ' ' +
+       df['text_reviews_count'].astype(str)
+   )
+   ```
+
+---
+
+## **Modeling**
+
+### **Pendekatan: Content-Based Filtering**
+
+Model yang digunakan:
+
+* **TF-IDF Vectorizer**: Mengubah teks pada kolom `combined_features` menjadi representasi numerik berbobot.
+* **Cosine Similarity**: Mengukur kemiripan antar buku berdasarkan vektor TF-IDF.
+
+#### **Cara Kerja Inti:**
+
+1. Buku direpresentasikan sebagai vektor berdasarkan kata-kata unik yang ada di `combined_features`.
+2. Kemiripan antar buku dihitung menggunakan **cosine similarity** — semakin dekat sudut antar vektor, semakin mirip buku tersebut.
+3. Untuk setiap buku input, sistem akan mengembalikan Top-N buku yang paling mirip berdasarkan nilai cosine similarity tertinggi.
+
+#### **Output**
+
+Fungsi `recommend_books(title)` akan mengembalikan 10 buku paling relevan.
+
+Contoh output untuk input *The Hobbit*:
 
 ```
 1. The Fellowship of the Ring - J.R.R. Tolkien  
 2. The Two Towers - J.R.R. Tolkien  
 3. The Return of the King - J.R.R. Tolkien  
-... (dan seterusnya)
+... dan seterusnya
 ```
 
 ### **Kelebihan dan Kekurangan**
@@ -108,7 +129,7 @@ Rekomendasi untuk buku *The Hobbit*:
 | Content-Based Filtering | Tidak butuh data pengguna, cocok untuk cold-start | Rekomendasi cenderung sempit pada buku serupa, kurang eksploratif |
 | Collaborative Filtering | Lebih personal, berdasarkan rating pengguna nyata | Membutuhkan data interaksi pengguna yang banyak dan berkualitas   |
 
-## **6. Evaluation**
+## **Evaluation**
 
 Karena pendekatan *content-based filtering* tidak memiliki label ground truth eksplisit, evaluasi dilakukan dengan cara:
 
