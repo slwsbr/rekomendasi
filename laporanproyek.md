@@ -1,6 +1,6 @@
 # Laporan Proyek Machine Learning - Salwa Sabira
 
-## **1. Project Overview (Ulasan Proyek)**
+## **1. Project Overview**
 
 Proyek ini bertujuan untuk mengembangkan sebuah **sistem rekomendasi buku** menggunakan pendekatan *content-based filtering*. Di era digital saat ini, di mana jumlah buku yang tersedia sangatlah masif baik dalam format fisik maupun digital, para pembaca seringkali kesulitan dalam menemukan buku yang sesuai dengan minat dan preferensi mereka. Permasalahan ini menjadi semakin signifikan dengan adanya platform seperti Goodreads yang menyediakan jutaan judul buku, rating, dan ulasan. Tanpa sistem yang cerdas, pembaca mungkin akan melewatkan buku-buku bagus yang sebenarnya sangat relevan bagi mereka, atau terjebak dalam rekomendasi yang kurang personal.
 
