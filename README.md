@@ -65,17 +65,17 @@ Dataset berisi informasi tentang 11.119 buku dengan 12 kolom, antara lain:
 
 Berikut adalah tahapan preprocessing data:
 
-1. **Filter bahasa**
+1. **Menghapus kolom tidak relevan**
+
+   * Kolom seperti `bookID`, `isbn`, `isbn13`, `publication_date`, `publisher`, `num_pages` dihapus karena tidak berkontribusi terhadap pemodelan.
+  
+2. **Filter bahasa**
 
    * Hanya buku dengan `language_code` = `'en'` atau `'eng'` yang disertakan untuk memastikan konsistensi konten.
 
-2. **Menghapus kolom tidak relevan**
+3. **Cek Anomali**
 
-   * Kolom seperti `bookID`, `isbn`, `isbn13`, `publication_date`, `publisher`, `num_pages` dihapus karena tidak berkontribusi terhadap pemodelan.
-
-3. **Normalisasi format numerik**
-
-   * Kolom `average_rating`, `ratings_count`, dan `text_reviews_count` dipastikan bertipe numerik.
+   * Cek rating yang tidak normal dan filter buku dengan rating yang valid.
 
 4. **Pembuatan kolom gabungan fitur (`combined_features`)**
 
