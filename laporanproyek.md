@@ -71,11 +71,11 @@ EDA dilakukan untuk memahami distribusi dan karakteristik dari setiap variabel p
 
 #### **Eksplorasi Variabel `title` dan `authors`**
 
-Dataset ini sangat kaya dengan **10.849 judul buku unik** dan **6.643 penulis yang berbeda**, menunjukkan keragaman konten yang tinggi. Penulis seperti **Margaret Atwood, Stephen King, dan James Patterson** memiliki kontribusi buku terbanyak, mengindikasikan bahwa karya-karya mereka mungkin memiliki pengaruh signifikan dalam basis data buku ini dan bisa menjadi titik fokus rekomendasi jika pengguna menyukai gaya penulis tertentu.
+Dataset ini sangat kaya dengan **10.344 judul buku unik** dan **6.635 penulis yang berbeda**, menunjukkan keragaman konten yang tinggi. Penulis seperti **Stephen King, P.G. Wodehouse,nRumiko Takahashi, dan Orson Scott Card** memiliki kontribusi buku terbanyak, mengindikasikan bahwa karya-karya mereka mungkin memiliki pengaruh signifikan dalam basis data buku ini dan bisa menjadi titik fokus rekomendasi jika pengguna menyukai gaya penulis tertentu.
 
 #### **Eksplorasi Variabel `average_rating`**
 
-Distribusi *average\_rating* menunjukkan bahwa **mayoritas buku dalam dataset memiliki rata-rata rating di atas 3.5**, dengan puncak yang signifikan di sekitar 4.0. Hal ini menandakan dataset cenderung berisi buku-buku yang umumnya disukai oleh pembaca, yang bisa menjadi keuntungan dalam merekomendasikan buku-buku berkualitas tinggi. Namun, perlu diperhatikan bahwa ada juga buku dengan rating sangat rendah (mendekati 0), yang perlu ditangani untuk menghindari rekomendasi buku berkualitas rendah.
+Distribusi *average\_rating* menunjukkan bahwa **mayoritas buku dalam dataset memiliki rata-rata rating di atas 3.9**, dengan puncak yang signifikan di sekitar 5.0. Hal ini menandakan dataset cenderung berisi buku-buku yang umumnya disukai oleh pembaca, yang bisa menjadi keuntungan dalam merekomendasikan buku-buku berkualitas tinggi. Namun, perlu diperhatikan bahwa ada juga buku dengan rating sangat rendah (mendekati 0), yang perlu ditangani untuk menghindari rekomendasi buku berkualitas rendah.
 
 #### **Eksplorasi Variabel `language_code`**
 
@@ -83,7 +83,7 @@ Terlihat jelas bahwa **bahasa Inggris ('eng' dan 'en') mendominasi dataset**, de
 
 #### **Eksplorasi Variabel `text_reviews_count` dan `ratings_count`**
 
-Kedua variabel ini menunjukkan **distribusi yang sangat condong ke kanan (right-skewed)**, yang berarti sebagian besar buku memiliki jumlah ulasan dan rating yang relatif sedikit, sementara hanya segelintir buku yang sangat populer memiliki jumlah ulasan/rating yang sangat tinggi. Pola ini umum dalam dataset populer, menunjukkan adanya **outlier** pada buku-buku yang sangat populer. Transformasi logaritmik (`np.log1p`) sangat membantu dalam memvisualisasikan distribusi ini dengan lebih baik, namun **ekstremitas pada ujung kanan (outlier) menunjukkan potensi bias** jika data ini digunakan tanpa penyesuaian, karena buku-buku yang sangat populer mungkin akan lebih sering muncul dalam rekomendasi meskipun kontennya tidak sepenuhnya relevan.
+Kedua variabel ini menunjukkan **distribusi yang sangat condong ke kanan (right-skewed)**, yang berarti sebagian besar buku memiliki jumlah ulasan dan rating yang relatif sedikit, sementara hanya segelintir buku yang sangat populer memiliki jumlah ulasan/rating yang sangat tinggi. Pola ini umum dalam dataset populer, menunjukkan adanya **outlier** pada buku-buku yang sangat populer. Transformasi logaritmik (`np.log1p`) sangat membantu dalam memvisualisasikan distribusi ini dengan lebih baik, namun terlalu ekstrem pada ujung kanan (outlier) menunjukkan potensi bias jika data ini digunakan tanpa penyesuaian, karena buku-buku yang sangat populer mungkin akan lebih sering muncul dalam rekomendasi meskipun kontennya tidak sepenuhnya relevan.
 
 #### **Eksplorasi Variabel `num_pages`**
 
@@ -91,7 +91,7 @@ Mayoritas buku memiliki jumlah halaman antara 200 hingga 400. Meskipun tidak lan
 
 #### **Eksplorasi Variabel `publisher`**
 
-Publishers seperti **Vintage, Penguin Books, dan Bantam Dell Publishing Group** menerbitkan jumlah buku terbanyak dalam dataset ini. Informasi ini tidak secara langsung menjadi fitur dalam model *content-based filtering* ini, namun dapat memberikan gambaran tentang dominasi penerbit tertentu dan potensi bias koleksi buku dalam dataset.
+Publishers seperti **Vintage, Penguin Books, dan Penguin Classic** menerbitkan jumlah buku terbanyak dalam dataset ini. Informasi ini tidak secara langsung menjadi fitur dalam model *content-based filtering* ini, namun dapat memberikan gambaran tentang dominasi penerbit tertentu dan potensi bias koleksi buku dalam dataset.
 
 -----
 
@@ -104,7 +104,7 @@ Tahap persiapan data sangat penting untuk memastikan data dalam format yang tepa
 1.  **Penghapusan Kolom Tidak Relevan:**
 
       * **Teknik:** Menghapus kolom `bookID`, `isbn`, `isbn13`, `num_pages`, `publication_date`, dan `publisher`.
-      * **Tujuan:** Kolom-kolom ini dihapus karena **tidak mengandung informasi relevan** yang secara langsung berkontribusi pada kesamaan konten dalam sistem rekomendasi *content-based*. Misalnya, `bookID` atau `isbn` adalah identifikasi unik buku, bukan deskripsi konten. `num_pages`, `publication_date`, dan `publisher` meskipun merupakan atribut buku, tidak digunakan dalam definisi "konten" untuk sistem rekomendasi ini dan **hanya akan membebani model dengan variabel yang tidak berguna** atau mengurangi fokus pada karakteristik utama seperti judul, penulis, rating, dan ulasan teks.
+      * **Tujuan:** Kolom-kolom ini dihapus karena **tidak mengandung informasi relevan** yang secara langsung berkontribusi pada kesamaan konten dalam sistem rekomendasi *content-based*. Misalnya, `bookID` atau `isbn` adalah identifikasi unik buku, bukan deskripsi konten. `num_pages`, `publication_date`, dan `publisher` meskipun merupakan atribut buku, tidak digunakan dalam definisi "konten" untuk sistem rekomendasi ini dan hanya akan membebani model dengan variabel yang tidak berguna atau mengurangi fokus pada karakteristik utama seperti judul, penulis, rating, dan ulasan teks.
       * **Implementasi:**
         ```python
         df.drop(columns=['bookID', 'isbn', 'isbn13','num_pages', 'publication_date','publisher'], inplace=True)
@@ -122,7 +122,7 @@ Tahap persiapan data sangat penting untuk memastikan data dalam format yang tepa
 3.  **Penanganan Anomali `average_rating`:**
 
       * **Teknik:** Memfilter buku dengan `average_rating` antara nilai valid (\>0 dan \<=5).
-      * **Tujuan:** Meskipun EDA menunjukkan distribusi rating yang baik, beberapa entri mungkin memiliki nilai `average_rating` yang tidak logis (misalnya 0, atau nilai di luar rentang standar 1-5 yang umum digunakan pada platform rating). Pemfilteran ini dilakukan untuk **memastikan bahwa data rating yang digunakan valid dan konsisten**, sehingga **tidak menimbulkan bias atau kesalahan** dalam perhitungan kesamaan konten yang menggunakan rating sebagai salah satu fitur.
+      * **Tujuan:** Meskipun EDA menunjukkan distribusi rating yang baik, beberapa entri mungkin memiliki nilai `average_rating` yang tidak logis (misalnya 0, atau nilai di luar rentang standar 1-5 yang umum digunakan pada platform rating). Pemfilteran ini dilakukan untuk **memastikan bahwa data rating yang digunakan valid dan konsisten**, sehingga tidak menimbulkan bias atau kesalahan dalam perhitungan kesamaan konten yang menggunakan rating sebagai salah satu fitur.
       * **Implementasi:**
         ```python
         df = df[(df['average_rating'] > 0) & (df['average_rating'] <= 5)]
@@ -131,7 +131,7 @@ Tahap persiapan data sangat penting untuk memastikan data dalam format yang tepa
 4.  **Pembentukan `combined_features`:**
 
       * **Teknik:** Menggabungkan kolom `title`, `authors`, `language_code`, `average_rating`, `ratings_count`, dan `text_reviews_count` menjadi satu kolom teks baru bernama `combined_features`. Kolom numerik dikonversi ke string sebelum digabungkan.
-      * **Tujuan:** Langkah ini **sangat krusial** karena `TF-IDF Vectorizer` hanya dapat memproses data dalam format teks. Dengan menggabungkan semua fitur yang relevan menjadi satu string, kita **membuat representasi komprehensif** dari setiap buku yang akan menjadi dasar bagi *TF-IDF* untuk mengekstrak kata kunci dan konsep. Ini memungkinkan *TF-IDF* untuk menangkap kesamaan tidak hanya dari judul dan penulis, tetapi juga dari indikator popularitas dan kualitas (rating, jumlah ulasan) dan bahasa, yang semuanya berkontribusi pada definisi "konten" dalam konteks ini.
+      * **Tujuan:** Langkah ini sangat krusial karena `TF-IDF Vectorizer` hanya dapat memproses data dalam format teks. Dengan menggabungkan semua fitur yang relevan menjadi satu string, kita membuat representasi komprehensif dari setiap buku yang akan menjadi dasar bagi *TF-IDF* untuk mengekstrak kata kunci dan konsep. Ini memungkinkan *TF-IDF* untuk menangkap kesamaan tidak hanya dari judul dan penulis, tetapi juga dari indikator popularitas dan kualitas (rating, jumlah ulasan) dan bahasa, yang semuanya berkontribusi pada definisi "konten" dalam konteks ini.
       * **Implementasi:**
         ```python
         df['combined_features'] = (
@@ -143,12 +143,9 @@ Tahap persiapan data sangat penting untuk memastikan data dalam format yang tepa
             df['text_reviews_count'].astype(str)
         )
         ```
-
-Proses *data preparation* ini memastikan bahwa data yang masuk ke model adalah data yang relevan, bersih, dan dalam format yang sesuai untuk ekstraksi fitur berbasis teks, yang esensial untuk kinerja optimal sistem rekomendasi *content-based*.
-
 -----
 
-## **Modeling and Result**
+## **Modeling and Results**
 
 ### **Membangun Sistem Rekomendasi Content-Based Filtering**
 
