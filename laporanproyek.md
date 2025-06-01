@@ -1,6 +1,6 @@
 # Laporan Proyek Machine Learning - Salwa Sabira
 
-## **1. Project Overview**
+## **Project Overview**
 
 Proyek ini bertujuan untuk mengembangkan sebuah **sistem rekomendasi buku** menggunakan pendekatan *content-based filtering*. Di era digital saat ini, di mana jumlah buku yang tersedia sangatlah masif baik dalam format fisik maupun digital, para pembaca seringkali kesulitan dalam menemukan buku yang sesuai dengan minat dan preferensi mereka. Permasalahan ini menjadi semakin signifikan dengan adanya platform seperti Goodreads yang menyediakan jutaan judul buku, rating, dan ulasan. Tanpa sistem yang cerdas, pembaca mungkin akan melewatkan buku-buku bagus yang sebenarnya sangat relevan bagi mereka, atau terjebak dalam rekomendasi yang kurang personal.
 
@@ -10,13 +10,13 @@ Sistem rekomendasi menjadi solusi krusial untuk mengatasi *information overload*
 
 ## **2. Business Understanding**
 
-### **Problem Statements (Pernyataan Masalah)**
+### **Problem Statements**
 
 1.  **Kesulitan Pencarian Buku:** Pembaca seringkali kesulitan menemukan buku baru yang sesuai dengan minat dan preferensi mereka di tengah lautan judul yang sangat banyak.
 2.  **Keterbatasan Rekomendasi Konvensional:** Metode pencarian buku konvensional (misalnya, berdasarkan *bestseller* atau kategori umum) seringkali tidak cukup personal dan relevan untuk setiap individu.
 3.  **Memaksimalkan Penemuan Konten:** Bagaimana cara membantu pembaca menemukan buku-buku yang relevan dengan cepat dan efisien, sehingga meningkatkan kepuasan membaca mereka?
 
-### **Goals (Tujuan)**
+### **Goals**
 
 Tujuan utama dari proyek ini adalah **membangun sebuah sistem rekomendasi buku yang mampu menyarankan buku-buku lain yang memiliki karakteristik konten serupa dengan buku yang diminati pengguna.** Sistem ini diharapkan dapat membantu pembaca dalam eksplorasi buku dan memperkaya pengalaman membaca mereka.
 
@@ -31,7 +31,7 @@ Mempertimbangkan dataset yang tersedia yang berfokus pada atribut buku, serta tu
 
 -----
 
-## **3. Data Understanding**
+## **Data Understanding**
 
 Dataset yang digunakan dalam proyek ini adalah **Goodreads Books** yang diperoleh dari Kaggle, dapat diakses melalui tautan berikut: [https://www.kaggle.com/datasets/jealousleopard/goodreadsbooks](https://www.kaggle.com/datasets/jealousleopard/goodreadsbooks).
 
@@ -143,7 +143,7 @@ Proses *data preparation* ini memastikan bahwa data yang masuk ke model adalah d
 
 -----
 
-## **5. Modeling and Result**
+## **Modeling**
 
 ### **Membangun Sistem Rekomendasi Content-Based Filtering**
 
@@ -247,7 +247,7 @@ Hasil rekomendasi untuk 'The Hobbit' menunjukkan buku-buku lain yang ditulis ole
 
 -----
 
-## **6. Evaluation**
+## **Evaluation**
 
 ### **Metrik Evaluasi yang Digunakan**
 
