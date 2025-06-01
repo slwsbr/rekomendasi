@@ -27,7 +27,7 @@ Tujuan utama dari proyek ini adalah **membangun sebuah sistem rekomendasi buku y
 
 ### **Solution Approach**
 
-Untuk mencapai tujuan tersebut, kami mempertimbangkan dua pendekatan utama dalam sistem rekomendasi:
+Untuk mencapai tujuan tersebut, Dipertimbangkan dua pendekatan utama dalam sistem rekomendasi:
 
 1.  **Content-Based Filtering:** Pendekatan ini merekomendasikan item yang serupa dengan item yang disukai pengguna di masa lalu. Dalam konteks buku, ini berarti merekomendasikan buku-buku yang memiliki karakteristik (judul, penulis, bahasa, rating, dll.) yang mirip dengan buku yang dipilih. Keuntungan utama dari metode ini adalah kemampuannya untuk merekomendasikan item-item baru yang belum pernah dilihat pengguna (masalah *cold-start* untuk item), dan rekomendasi yang sangat personal. Proyek ini akan **mengimplementasikan pendekatan *content-based filtering*** karena kesesuaiannya dengan dataset yang tersedia yang kaya akan informasi atribut buku.
 2.  **Collaborative Filtering:** Pendekatan ini merekomendasikan item berdasarkan preferensi pengguna yang mirip. Misalnya, jika pengguna A menyukai buku X dan Y, dan pengguna B juga menyukai buku X, maka sistem dapat merekomendasikan buku Y kepada pengguna B. Keuntungan utamanya adalah kemampuannya menemukan pola yang kompleks dalam preferensi pengguna. Namun, metode ini membutuhkan data interaksi pengguna yang ekstensif (rating, pembelian, dll.) dan dapat menghadapi masalah *cold-start* bagi pengguna baru.
@@ -45,7 +45,7 @@ Dataset ini mengandung informasi lengkap mengenai **11.119 buku** dan memiliki 2
 
 **Kondisi Data Awal:**
 
-  * **Jumlah Data:** 11.119 baris dan 23 kolom.
+  * **Jumlah Data:** 11.119 baris dan 12 kolom.
   * **Missing Values:** Tidak ada *missing values* terdeteksi pada kolom-kolom kunci yang akan digunakan setelah pembersihan awal.
   * **Data Duplikat:** Tidak ada data duplikat yang terdeteksi.
 
@@ -71,11 +71,11 @@ EDA dilakukan untuk memahami distribusi dan karakteristik dari setiap variabel p
 
 #### **Eksplorasi Variabel `title` dan `authors`**
 
-Dataset ini sangat kaya dengan **10.344 judul buku unik** dan **6.635 penulis yang berbeda**, menunjukkan keragaman konten yang tinggi. Penulis seperti **Stephen King, P.G. Wodehouse,nRumiko Takahashi, dan Orson Scott Card** memiliki kontribusi buku terbanyak, mengindikasikan bahwa karya-karya mereka mungkin memiliki pengaruh signifikan dalam basis data buku ini dan bisa menjadi titik fokus rekomendasi jika pengguna menyukai gaya penulis tertentu.
+Dataset ini sangat kaya dengan **10.344 judul buku unik** dan **6.635 penulis yang berbeda**, menunjukkan keragaman konten yang tinggi. Penulis seperti **Stephen King, P.G. Wodehouse, Rumiko Takahashi, dan Orson Scott Card** memiliki kontribusi buku terbanyak, mengindikasikan bahwa karya-karya mereka mungkin memiliki pengaruh signifikan dalam basis data buku ini dan bisa menjadi titik fokus rekomendasi jika pengguna menyukai gaya penulis tertentu.
 
 #### **Eksplorasi Variabel `average_rating`**
 
-Distribusi *average\_rating* menunjukkan bahwa **mayoritas buku dalam dataset memiliki rata-rata rating di atas 3.9**, dengan puncak yang signifikan di sekitar 5.0. Hal ini menandakan dataset cenderung berisi buku-buku yang umumnya disukai oleh pembaca, yang bisa menjadi keuntungan dalam merekomendasikan buku-buku berkualitas tinggi. Namun, perlu diperhatikan bahwa ada juga buku dengan rating sangat rendah (mendekati 0), yang perlu ditangani untuk menghindari rekomendasi buku berkualitas rendah.
+Distribusi *average\_rating* menunjukkan bahwa **mayoritas buku dalam dataset memiliki rata-rata rating 3.9**, dengan puncak yang signifikan di sekitar 5.0. Hal ini menandakan dataset cenderung berisi buku-buku yang umumnya disukai oleh pembaca, yang bisa menjadi keuntungan dalam merekomendasikan buku-buku berkualitas tinggi. Namun, perlu diperhatikan bahwa ada juga buku dengan rating sangat rendah (mendekati 0), yang perlu ditangani untuk menghindari rekomendasi buku berkualitas rendah.
 
 #### **Eksplorasi Variabel `language_code`**
 
@@ -137,10 +137,7 @@ Tahap persiapan data sangat penting untuk memastikan data dalam format yang tepa
         df['combined_features'] = (
             df['title'] + ' ' +
             df['authors'] + ' ' +
-            df['language_code'] + ' ' +
-            df['average_rating'].astype(str) + ' ' +
-            df['ratings_count'].astype(str) + ' ' +
-            df['text_reviews_count'].astype(str)
+            df['language_code']
         )
         ```
 -----
@@ -218,20 +215,34 @@ print(recommend_books('The Hobbit'))
 
 ```
 Content-Based Recommendations untuk 'The Hobbit':
-                          title                       authors
-10332  The Fellowship of the Ring        J.R.R. Tolkien, Alan Lee
-10331    The Two Towers (The Lord of the Rings  #2)  J.R.R. Tolkien, Alan Lee
-10330   The Return of the King (The Lord of the Rings  #3) J.R.R. Tolkien, Alan Lee
-10334  The Lord of the Rings  J.R.R. Tolkien
-10333  The Silmarillion      J.R.R. Tolkien, Christopher Tolkien
-10335  Unfinished Tales       J.R.R. Tolkien, Christopher Tolkien
-10336  The Children of Húrin J.R.R. Tolkien, Christopher Tolkien
-10337  The History of Middle-Earth (The History of Middle-Earth  #1-12) J.R.R. Tolkien, Christopher Tolkien
-10338  The Book of Lost Tales  Part One (The History of Middle-Earth  #1) J.R.R. Tolkien, Christopher Tolkien
-10339  The Book of Lost Tales  Part Two (The History of Middle-Earth  #2) J.R.R. Tolkien, Christopher Tolkien
+
+Content-Based Recommendations untuk 'The Hobbit':
+                                                  title  \
+1699                The Hobbit: Or There and Back Again   
+1700                                         The Hobbit   
+1698                              Poems From The Hobbit   
+6269               The Hobbit  or  There and Back Again   
+4271                 The Lord of the Rings / The Hobbit   
+1697                               The Annotated Hobbit   
+21    J.R.R. Tolkien 4-Book Boxed Set: The Hobbit an...   
+4595                         Pictures by J.R.R. Tolkien   
+721                       The Letters of J.R.R. Tolkien   
+5254                                   The Silmarillion   
+
+                                                authors  
+1699                                     J.R.R. Tolkien  
+1700                                     J.R.R. Tolkien  
+1698                                     J.R.R. Tolkien  
+6269                           J.R.R. Tolkien/Alan  Lee  
+4271                                     J.R.R. Tolkien  
+1697                 J.R.R. Tolkien/Douglas A. Anderson  
+21                                       J.R.R. Tolkien  
+4595                 J.R.R. Tolkien/Christopher Tolkien  
+721   J.R.R. Tolkien/Humphrey Carpenter/Christopher ...  
+5254                 J.R.R. Tolkien/Christopher Tolkien 
 ```
 
-Hasil rekomendasi untuk 'The Hobbit' menunjukkan buku-buku lain yang ditulis oleh J.R.R. Tolkien, terutama yang berkaitan dengan dunia Middle-earth. Ini adalah hasil yang **sangat relevan dan sesuai dengan ekspektasi** dari sistem *content-based filtering*, karena buku-buku tersebut memiliki kesamaan konten yang jelas berdasarkan penulis, judul, dan secara implisit, genre fantasi.
+Hasil rekomendasi untuk 'The Hobbit' menunjukkan buku-buku lain yang ditulis oleh J.R.R. Tolkien. Ini adalah hasil yang **sangat relevan dan sesuai dengan ekspektasi** dari sistem *content-based filtering*, karena buku-buku tersebut memiliki kesamaan konten yang jelas berdasarkan penulis, judul, dan secara implisit, genre fantasi.
 
 ### **Kelebihan dan Kekurangan Pendekatan Content-Based Filtering:**
 
@@ -261,9 +272,9 @@ Metrik evaluasi utama yang digunakan dalam proyek ini adalah:
       * **Penjelasan:** Metrik ini mengukur sejauh mana buku-buku yang direkomendasikan secara semantik atau tematik mirip dengan buku input. Semakin tinggi relevansinya, semakin baik kinerja sistem dalam menemukan "kembaran" konten.
       * **Cara Metrik Bekerja (Formula & Cara Kerja):**
         Dalam konteks ini, Relevansi Konten dievaluasi secara **manual/subjektif** melalui **inspeksi visual terhadap daftar rekomendasi**. Tidak ada formula matematis langsung yang diterapkan karena tidak ada *ground truth* eksplisit tentang "buku mana yang seharusnya direkomendasikan" dari dataset ini.
-          * Kami memilih sebuah buku input (misalnya, 'The Hobbit').
+          * Lalu memilih sebuah buku input (misalnya, 'The Hobbit').
           * Sistem menghasilkan daftar $N$ (dalam kasus ini, $N=10$) buku yang paling mirip berdasarkan *cosine similarity* dari `combined_features`.
-          * Kami kemudian secara manual memeriksa judul dan penulis dari $N$ buku yang direkomendasikan.
+          * Lalu kemudian secara manual memeriksa judul dan penulis dari $N$ buku yang direkomendasikan.
           * Relevansi dinilai berdasarkan apakah buku-buku yang direkomendasikan memiliki penulis yang sama, genre yang serupa (fantasi, fiksi ilmiah, roman, dll., yang dapat diinferensi dari judul dan penulis), atau tema yang serupa dengan buku input. Jika sebagian besar rekomendasi memenuhi kriteria kesamaan ini, sistem dianggap relevan.
           * **Cosine Similarity (Rumus):** Meskipun relevansi diinterpretasi secara manual, dasarnya adalah *cosine similarity*. Rumus *cosine similarity* antara dua vektor $A$ dan $B$ (dalam kasus ini, vektor TF-IDF dari dua buku) didefinisikan sebagai:
             $$\text{similarity}(A, B) = \frac{A \cdot B}{\|A\| \|B\|} = \frac{\sum_{i=1}^{n} A_i B_i}{\sqrt{\sum_{i=1}^{n} A_i^2} \sqrt{\sum_{i=1}^{n} B_i^2}}$$
