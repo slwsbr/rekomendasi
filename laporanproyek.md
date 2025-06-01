@@ -6,6 +6,11 @@ Proyek ini bertujuan untuk mengembangkan sebuah **sistem rekomendasi buku** meng
 
 Sistem rekomendasi menjadi solusi krusial untuk mengatasi *information overload* ini. Dengan menganalisis karakteristik buku yang telah disukai pengguna (atau dalam kasus ini, karakteristik buku itu sendiri), sistem dapat menyarankan item-item serupa, meningkatkan pengalaman pengguna, dan membantu mereka menemukan judul-judul baru yang relevan. Proyek ini berfokus pada pendekatan *content-based filtering* karena memungkinkan rekomendasi yang sangat personal tanpa memerlukan data historis interaksi pengguna dalam jumlah besar, cukup dengan informasi detail dari setiap buku.
 
+Referensi:
+
+* Jannach, D., & Adomavicius, G. (2016). Recommendation systems: Challenges, insights and research opportunities. *Elsevier, Data & Knowledge Engineering*.
+* Ricci, F., Rokach, L., & Shapira, B. (2011). *Introduction to Recommender Systems Handbook*. Springer.
+
 -----
 
 ## **2. Business Understanding**
