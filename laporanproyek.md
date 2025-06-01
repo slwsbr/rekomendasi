@@ -95,7 +95,7 @@ Publishers seperti **Vintage, Penguin Books, dan Bantam Dell Publishing Group** 
 
 -----
 
-## **4. Data Preparation**
+## **Data Preparation**
 
 Tahap persiapan data sangat penting untuk memastikan data dalam format yang tepat dan bersih untuk pembangunan model. Proses ini melibatkan pemilihan fitur, pemfilteran data, dan penggabungan fitur. Setiap langkah dijelaskan dengan tujuannya.
 
