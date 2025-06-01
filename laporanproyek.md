@@ -216,7 +216,6 @@ print(recommend_books('The Hobbit'))
 ```
 Content-Based Recommendations untuk 'The Hobbit':
 
-Content-Based Recommendations untuk 'The Hobbit':
                                                   title  \
 1699                The Hobbit: Or There and Back Again   
 1700                                         The Hobbit   
