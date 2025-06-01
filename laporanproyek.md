@@ -2,9 +2,9 @@
 
 ## **Project Overview**
 
-Proyek ini bertujuan untuk mengembangkan sebuah **sistem rekomendasi buku** menggunakan pendekatan *content-based filtering*. Di era digital saat ini, di mana jumlah buku yang tersedia sangatlah masif baik dalam format fisik maupun digital, para pembaca seringkali kesulitan dalam menemukan buku yang sesuai dengan minat dan preferensi mereka. Permasalahan ini menjadi semakin signifikan dengan adanya platform seperti Goodreads yang menyediakan jutaan judul buku, rating, dan ulasan. Tanpa sistem yang cerdas, pembaca mungkin akan melewatkan buku-buku bagus yang sebenarnya sangat relevan bagi mereka, atau terjebak dalam rekomendasi yang kurang personal.
+Proyek ini bertujuan untuk mengembangkan sistem rekomendasi buku dengan pendekatan content-based filtering. Di era digital saat ini, jumlah buku yang tersedia—baik dalam bentuk fisik maupun digital—sangatlah banyak. Hal ini membuat pembaca kesulitan menemukan buku yang sesuai dengan minat mereka. Platform seperti Goodreads menyediakan jutaan judul buku, lengkap dengan rating dan ulasan pengguna. Tanpa sistem rekomendasi yang baik, pengguna bisa melewatkan buku yang sebenarnya cocok untuk mereka, atau malah mendapatkan saran yang kurang relevan.
 
-Sistem rekomendasi menjadi solusi krusial untuk mengatasi *information overload* ini. Dengan menganalisis karakteristik buku yang telah disukai pengguna (atau dalam kasus ini, karakteristik buku itu sendiri), sistem dapat menyarankan item-item serupa, meningkatkan pengalaman pengguna, dan membantu mereka menemukan judul-judul baru yang relevan. Proyek ini berfokus pada pendekatan *content-based filtering* karena memungkinkan rekomendasi yang sangat personal tanpa memerlukan data historis interaksi pengguna dalam jumlah besar, cukup dengan informasi detail dari setiap buku.
+Sistem rekomendasi hadir sebagai solusi untuk mengatasi masalah tersebut. Dengan menganalisis karakteristik buku-buku yang pernah disukai pengguna, sistem dapat memberikan saran buku lain yang serupa. Dalam proyek ini, pendekatan content-based filtering dipilih karena metode ini memungkinkan personalisasi yang tinggi tanpa memerlukan data historis interaksi pengguna secara besar-besaran. Cukup dengan informasi mendetail dari setiap buku, sistem ini bisa memberikan rekomendasi yang relevan.
 
 Referensi:
 
@@ -17,9 +17,9 @@ Referensi:
 
 ### **Problem Statements**
 
-1.  **Kesulitan Pencarian Buku:** Pembaca seringkali kesulitan menemukan buku baru yang sesuai dengan minat dan preferensi mereka di tengah lautan judul yang sangat banyak.
-2.  **Keterbatasan Rekomendasi Konvensional:** Metode pencarian buku konvensional (misalnya, berdasarkan *bestseller* atau kategori umum) seringkali tidak cukup personal dan relevan untuk setiap individu.
-3.  **Memaksimalkan Penemuan Konten:** Bagaimana cara membantu pembaca menemukan buku-buku yang relevan dengan cepat dan efisien, sehingga meningkatkan kepuasan membaca mereka?
+1. **Sulit Menemukan Buku yang Sesuai**: Banyaknya pilihan justru membuat pembaca bingung menentukan bacaan berikutnya.
+2. **Rekomendasi Kurang Personal**: Saran berdasarkan kategori umum atau daftar bestseller seringkali tidak mencerminkan preferensi individu.
+3. **Kurangnya Eksplorasi Konten Relevan**: Tanpa bantuan sistem, pembaca mungkin tidak menyadari adanya buku-buku yang sebenarnya cocok untuk mereka.
 
 ### **Goals**
 
@@ -75,11 +75,11 @@ Dataset ini sangat kaya dengan **10.344 judul buku unik** dan **6.635 penulis ya
 
 #### **Eksplorasi Variabel `average_rating`**
 
-Distribusi *average\_rating* menunjukkan bahwa **mayoritas buku dalam dataset memiliki rata-rata rating 3.9**, dengan puncak yang signifikan di sekitar 5.0. Hal ini menandakan dataset cenderung berisi buku-buku yang umumnya disukai oleh pembaca, yang bisa menjadi keuntungan dalam merekomendasikan buku-buku berkualitas tinggi. Namun, perlu diperhatikan bahwa ada juga buku dengan rating sangat rendah (mendekati 0), yang perlu ditangani untuk menghindari rekomendasi buku berkualitas rendah.
+Distribusi *average\_rating* menunjukkan bahwa mayoritas buku dalam dataset memiliki rata-rata rating 3.9, dengan puncak yang signifikan di sekitar 5.0. Hal ini menandakan dataset cenderung berisi buku-buku yang umumnya disukai oleh pembaca, yang bisa menjadi keuntungan dalam merekomendasikan buku-buku berkualitas tinggi. Namun, perlu diperhatikan bahwa ada juga buku dengan rating sangat rendah (mendekati 0).
 
 #### **Eksplorasi Variabel `language_code`**
 
-Terlihat jelas bahwa **bahasa Inggris ('eng' dan 'en') mendominasi dataset**, dengan proporsi yang sangat besar dibandingkan bahasa lain. Hal ini **sangat informatif** karena menunjukkan bahwa sistem rekomendasi paling relevan untuk pengguna berbahasa Inggris. Ini juga menjadi dasar kuat untuk melakukan pemfilteran data dan hanya mempertahankan buku berbahasa Inggris, agar rekomendasi tidak tercampur dengan buku dari bahasa yang tidak dipahami oleh sebagian besar target pengguna.
+Mayoritas buku ditulis dalam bahasa Inggris (kode 'en' atau 'eng'), sehingga proyek ini hanya akan memfokuskan pada buku-buku dalam bahasa tersebut untuk memastikan hasil yang relevan.
 
 #### **Eksplorasi Variabel `text_reviews_count` dan `ratings_count`**
 
@@ -131,7 +131,7 @@ Tahap persiapan data sangat penting untuk memastikan data dalam format yang tepa
 4.  **Pembentukan `combined_features`:**
 
       * **Teknik:** Menggabungkan kolom `title`, `authors`, `language_code`, `average_rating`, `ratings_count`, dan `text_reviews_count` menjadi satu kolom teks baru bernama `combined_features`. Kolom numerik dikonversi ke string sebelum digabungkan.
-      * **Tujuan:** Langkah ini sangat krusial karena `TF-IDF Vectorizer` hanya dapat memproses data dalam format teks. Dengan menggabungkan semua fitur yang relevan menjadi satu string, kita membuat representasi komprehensif dari setiap buku yang akan menjadi dasar bagi *TF-IDF* untuk mengekstrak kata kunci dan konsep. Ini memungkinkan *TF-IDF* untuk menangkap kesamaan tidak hanya dari judul dan penulis, tetapi juga dari indikator popularitas dan kualitas (rating, jumlah ulasan) dan bahasa, yang semuanya berkontribusi pada definisi "konten" dalam konteks ini.
+      * **Tujuan:** Langkah ini sangat krusial karena `TF-IDF Vectorizer` hanya dapat memproses data dalam format teks. Dengan menggabungkan beberapa fitur yang relevan menjadi satu string, kita membuat representasi komprehensif dari setiap buku yang akan menjadi dasar bagi *TF-IDF* untuk mengekstrak kata kunci dan konsep. Ini memungkinkan *TF-IDF* untuk menangkap kesamaan tidak hanya dari judul dan penulis tapi juga bahasa, yang semuanya berkontribusi pada definisi "konten" dalam konteks ini.
       * **Implementasi:**
         ```python
         df['combined_features'] = (
@@ -288,7 +288,7 @@ Metrik evaluasi utama yang digunakan dalam proyek ini adalah:
 
 Berdasarkan **inspeksi visual dan analisis relevansi konten** dari contoh penggunaan model ('The Hobbit'):
 
-Output rekomendasi untuk 'The Hobbit' secara konsisten menampilkan buku-buku lain yang ditulis oleh J.R.R. Tolkien, seperti seri 'The Lord of the Rings' dan karya-karya lain yang berkaitan dengan Middle-earth ('The Silmarillion', 'Unfinished Tales', dll.). Ini menunjukkan bahwa model berhasil menangkap kesamaan berdasarkan penulis dan, secara implisit, genre (fantasi epik).
+Output rekomendasi untuk 'The Hobbit' secara konsisten menampilkan buku-buku lain yang ditulis oleh J.R.R. Tolkien, seperti seri 'The Lord of the Rings' dan karya-karya lain yang berkaitan dengan Middle-earth ('The Silmarillion', 'Unfinished Tales', dll.). Ini menunjukkan bahwa model berhasil menangkap kesamaan berdasarkan penulis dan, secara implisit, genre (fantasi).
 
 Ini adalah indikator yang kuat bahwa:
 
