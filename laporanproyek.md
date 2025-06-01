@@ -148,7 +148,7 @@ Proses *data preparation* ini memastikan bahwa data yang masuk ke model adalah d
 
 -----
 
-## **Modeling**
+## **Modeling and Result**
 
 ### **Membangun Sistem Rekomendasi Content-Based Filtering**
 
