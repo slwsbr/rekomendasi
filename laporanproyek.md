@@ -176,30 +176,27 @@ Sistem rekomendasi ini dibangun menggunakan pendekatan *content-based filtering*
 Fungsi `recommend_books` dibuat untuk mengambil judul buku sebagai input dan mengembalikan 10 buku teratas yang paling mirip berdasarkan skor *cosine similarity*.
 
 ```python
-def recommend_books(title, cosine_sim=cosine_sim):
-    # Mengambil indeks buku berdasarkan judul
-    idx = df[df['title'].str.lower() == title.lower()].index
+def recommend_books(title, cosine_sim=cosine_sim, df=df):
+    book_row = df[df['title'].str.lower() == title.lower()]
 
-    # Menangani kasus buku tidak ditemukan
-    if len(idx) == 0:
-        return "Buku tidak ditemukan dalam dataset."
+    if book_row.empty:
+        return "Book not found."
+    idx = book_row.index[0]
+    try:
+        positional_idx = df.index.get_loc(idx)
+    except KeyError:
+        titles_list = df['title'].str.lower().tolist()
+        try:
+             positional_idx = titles_list.index(title.lower())
+        except ValueError:
+             return "Book not found (positional index error)."
 
-    idx = idx[0] # Ambil indeks pertama jika ada duplikat judul
-
-    # Dapatkan skor kesamaan dari buku tersebut dengan semua buku lain
-    sim_scores = list(enumerate(cosine_sim[idx]))
-
-    # Urutkan buku berdasarkan skor kesamaan secara menurun
+    sim_scores = list(enumerate(cosine_sim[positional_idx]))
     sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-
-    # Ambil 10 buku teratas (mengabaikan buku itu sendiri)
-    sim_scores = sim_scores[1:11] # [1:11] untuk mengambil 10 rekomendasi, melewatkan buku itu sendiri
-
-    # Dapatkan indeks buku-buku yang direkomendasikan
-    book_indices = [i[0] for i in sim_scores]
-
-    # Kembalikan judul dan penulis dari buku-buku yang direkomendasikan
-    return df[['title', 'authors']].iloc[book_indices]
+    sim_scores = sim_scores[1:11]
+    recommended_book_original_indices = [df.index[i[0]] for i in sim_scores]
+    recommended_book_indices_in_filtered_df = [i[0] for i in sim_scores]
+    return df[['title', 'authors']].iloc[recommended_book_indices_in_filtered_df]
 ```
 
 ### **Contoh Penggunaan Model (Top-N Recommendation)**
