@@ -467,10 +467,10 @@ Evaluasi dilakukan terhadap ground truth yang sama, yang dibuat menggunakan TF-I
 
 **Interpretasi:**
 
-* **Precision@5 (76.0%):** Model Count Vectorizer menunjukkan bahwa rata-rata 76% dari 5 buku yang direkomendasikannya cocok dengan ground truth (yang dibuat oleh TF-IDF). Angka ini cukup baik, meskipun sedikit di bawah model TF-IDF.
-* **Recall@5 (43.1%):** Sistem ini berhasil menemukan sekitar 43.1% dari item yang dianggap relevan dalam 5 rekomendasi teratas. Ini juga sedikit lebih rendah dibandingkan TF-IDF.
-* **F1@5 (54.7%):** Skor F1 menunjukkan keseimbangan antara presisi dan recall untuk model Count Vectorizer.
-* **MAP@10 (54.8%):** Kualitas peringkat rekomendasi dari model Count Vectorizer, sebagaimana diukur oleh MAP@10, juga lebih rendah dibandingkan TF-IDF. Ini mengindikasikan bahwa TF-IDF lebih baik dalam menempatkan item yang sangat relevan di posisi yang lebih tinggi dalam daftar rekomendasi.
+* **Precision@5 sebesar 76.0%:** Model Count Vectorizer menunjukkan bahwa rata-rata 76% dari 5 buku yang direkomendasikannya cocok dengan ground truth (yang dibuat oleh TF-IDF). Angka ini cukup baik, meskipun sedikit di bawah model TF-IDF.
+* **Recall@5 sebesar 43.1%:** Sistem ini berhasil menemukan sekitar 43.1% dari item yang dianggap relevan dalam 5 rekomendasi teratas. Ini juga sedikit lebih rendah dibandingkan TF-IDF.
+* **F1@5 sebesar 54.7%:** Skor F1 menunjukkan keseimbangan antara presisi dan recall untuk model Count Vectorizer.
+* **MAP@10 sebesar 54.8%:** Kualitas peringkat rekomendasi dari model Count Vectorizer, sebagaimana diukur oleh MAP@10, juga lebih rendah dibandingkan TF-IDF. Ini mengindikasikan bahwa TF-IDF lebih baik dalam menempatkan item yang sangat relevan di posisi yang lebih tinggi dalam daftar rekomendasi.
 
 ### **3. Kesesuaian Metrik dengan Konteks**
 
