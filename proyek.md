@@ -366,34 +366,28 @@ $$\text{Precision@K} = \frac{\text{Jumlah item relevan dalam K rekomendasi terat
 Mengukur proporsi item relevan yang berhasil ditemukan dan direkomendasikan dalam K item teratas, dibandingkan dengan total item relevan yang ada. Metrik ini menilai kelengkapan atau cakupan rekomendasi.
 
 **Formula**:
-$$
-\text{Recall@K} = \frac{\text{Jumlah item relevan dalam K rekomendasi teratas}}{\text{Total jumlah item relevan dalam ground truth}}
-$$
+$$\text{Recall@K} = \frac{\text{Jumlah item relevan dalam K rekomendasi teratas}}{\text{Total jumlah item relevan dalam ground truth}}$$
+
 
 3. F1@K
 Merupakan rata-rata harmonik dari Precision@K dan Recall@K. Rata-rata harmonik digunakan karena memberikan bobot yang seimbang pada kedua metrik dan cenderung lebih rendah jika salah satu metrik memiliki nilai yang sangat rendah, sehingga cocok untuk kasus di mana keseimbangan antara presisi dan recall diinginkan.
 
 **Formula**:
-$$
-\text{F1@K} = 2 \times \frac{\text{Precision@K} \times \text{Recall@K}}{\text{Precision@K} + \text{Recall@K}}
-$$
+$$\text{F1@K} = 2 \times \frac{\text{Precision@K} \times \text{Recall@K}}{\text{Precision@K} + \text{Recall@K}}$$
 
 4. MAP@K (Mean Average Precision at K)
 MAP@K memberikan skor rata-rata dari Average Precision untuk semua query. AP@K sendiri mempertimbangkan urutan item relevan dalam daftar rekomendasi; item relevan yang muncul di posisi lebih atas mendapat bobot lebih tinggi. Ini metrik yang baik untuk menilai performa ranking.
 
 **Formula**:
-$$
-\text{AP@K} = \frac{\sum_{i=1}^{K} (\text{P@}i \times \text{rel}(i))}{\text{Jumlah item relevan dalam ground truth}}
-$$
+$$\text{AP@K} = \frac{\sum_{i=1}^{K} (\text{P@}i \times \text{rel}(i))}{\text{Jumlah item relevan dalam ground truth}}$$
 
+di mana :
 - $P@i$ adalah presisi pada posisi ke-i dalam daftar rekomendasi. 
 - $\text{rel}(i)$ bernilai 1 jika item pada posisi ke-i adalah relevan, dan 0 jika tidak.
   
-$$
-\text{MAP@K} = \frac{\sum_{u=1}^{|U|} \text{AP@K}_u}{|U|}
-$$
+$$\text{MAP@K} = \frac{\sum_{u=1}^{|U|} \text{AP@K}_u}{|U|}$$
 
-dimana:
+di mana:
  - $|U|$ adalah jumlah total query atau pengguna yang dievaluasi.
  - $\text{AP@K}_u$ adalah Average Precision@K untuk query atau pengguna ke-u
 
