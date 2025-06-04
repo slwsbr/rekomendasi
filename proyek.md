@@ -361,6 +361,8 @@ Mengukur seberapa banyak dari *K* item yang direkomendasikan adalah benar-benar 
 
 **Formula**:
 Precision@K = (Jumlah item relevan dalam top K) / K
+**Formula:**
+$$\text{Precision@K} = \frac{\text{Jumlah item relevan dalam K rekomendasi teratas}}{K}$$
 
 2. Recall@K (R@K)
 Mengukur proporsi item relevan yang ditemukan dalam top K rekomendasi.
