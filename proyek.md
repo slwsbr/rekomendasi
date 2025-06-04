@@ -161,7 +161,14 @@ tfidf_matrix = vectorizer.fit_transform(df['combined_features'])
 2). **Count Vectorization**
 
 `CountVectorizer` dari scikit-learn mengubah fitur teks gabungan (`combined_features`) menjadi `count_matrix` numerik. Proses ini melibatkan tokenisasi teks menjadi kata tunggal (unigram) dan pasangan kata (bigram) sesuai `ngram_range=(1, 2)`, penghapusan kata umum bahasa Inggris (`stop_words='english'`), dan pengabaian token yang muncul di kurang dari dua dokumen (`min_df=2`). Hasilnya, setiap buku direpresentasikan sebagai vektor frekuensi dari token-token yang telah disaring ini, yang kemudian digunakan untuk menghitung kemiripan.
-     
+
+```python
+count_vectorizer = CountVectorizer(stop_words='english',
+                                   ngram_range=(1, 2),       
+                                   min_df=2)                  
+count_matrix = count_vectorizer.fit_transform(df['combined_features'])
+ ```
+
    * **Alasan:** Count Vectorization memberikan representasi berdasarkan frekuensi kemunculan kata/frasa. Penggunaan bigram dapat membantu menangkap konteks yang lebih baik daripada kata tunggal saja.
 -----
 
