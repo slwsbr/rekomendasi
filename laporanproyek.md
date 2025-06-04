@@ -255,25 +255,25 @@ Content-Based Recommendations untuk 'The Hobbit':
 
 Sistem rekomendasi ini dievaluasi menggunakan metrik-metrik yang umum digunakan dalam sistem rekomendasi:
 
-### 1. Precision@K (P@K)
+1. Precision@K (P@K)
 Mengukur seberapa banyak dari *K* item yang direkomendasikan adalah benar-benar relevan.
 
 **Formula**:
 Precision@K = (Jumlah item relevan dalam top K) / K
 
-### 2. Recall@K (R@K)
+2. Recall@K (R@K)
 Mengukur proporsi item relevan yang ditemukan dalam top K rekomendasi.
 
 **Formula**:
 Recall@K = (Jumlah item relevan dalam top K) / (Jumlah total item relevan)
 
-### 3. F1@K
+3. F1@K
 Rata-rata harmonik antara Precision dan Recall.
 
 **Formula**:
 F1@K = 2 * Precision@K * Recall@K / (Precision@K + Recall@K)
 
-### 4. MAP@K (Mean Average Precision at K)
+4. MAP@K (Mean Average Precision at K)
 Rata-rata presisi kumulatif sampai posisi K, lebih menekankan posisi awal yang relevan.
 
 **Formula**:
