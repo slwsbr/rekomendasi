@@ -179,22 +179,33 @@ Pada tahap ini, model sistem rekomendasi content-based filtering dibangun menggu
 
 ### **Pendekatan 1: TF-IDF Vectorization + Cosine Similarity**
 
-Setelah data diproses dengan TF-IDF, langkah selanjutnya adalah membangun model content-based filtering menggunakan Cosine Similarity:
+Setelah data `combined_features` (gabungan judul, penulis, bahasa) dari setiap buku diubah menjadi representasi vektor numerik menggunakan TF-IDF – di mana setiap buku direpresentasikan oleh vektor yang membobotkan pentingnya kata-kata kunci di dalamnya – langkah selanjutnya adalah membangun model *content-based filtering*. Model ini memanfaatkan matriks kemiripan yang dihitung menggunakan Cosine Similarity untuk menemukan buku-buku yang paling serupa.
 
-**Menghitung Cosine Similarity:**
+**Menghitung Matriks Kemiripan (Cosine Similarity):**
 
-*Cosine Similarity* adalah metrik yang mengukur kemiripan antara dua vektor non-nol dalam ruang vektor. Semakin dekat nilai *cosine similarity* ke 1, semakin mirip kedua item. Dalam konteks ini, kita menghitung *cosine similarity* antara setiap pasang buku berdasarkan vektor TF-IDF mereka. `linear_kernel` digunakan karena lebih cepat untuk menghitung *cosine similarity* ketika vektor sudah dinormalisasi (seperti hasil dari TF-IDF), **bertujuan untuk efisiensi komputasi** pada matriks yang besar.
-**Implementasi:**
-        ```python
-        from sklearn.metrics.pairwise import linear_kernel
-        cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
-        print("Shape Cosine Similarity matrix:", cosine_sim.shape)
-        ```
-        `cosine_sim` adalah matriks simetri yang menunjukkan tingkat kemiripan antara setiap buku dengan buku lainnya, menjadi inti dari mekanisme rekomendasi kita.
+*Cosine Similarity* adalah metrik yang mengukur kemiripan antara dua vektor non-nol dalam ruang fitur (dalam hal ini, ruang fitur TF-IDF). Nilai yang mendekati 1 menandakan kemiripan yang tinggi, yang berarti buku-buku tersebut berbagi kata-kata penting dan khas dengan proporsi yang serupa. Dalam konteks ini, kita menghitung *cosine similarity* antara vektor TF-IDF dari setiap pasang buku dalam dataset. Fungsi `linear_kernel` dari scikit-learn digunakan karena efisien untuk menghitung *cosine similarity* pada matriks TF-IDF yang umumnya sudah ternormalisasi, sehingga mempercepat komputasi pada matriks yang besar.
 
-**Fungsi Rekomendasi**
+*Implementasi Penghitungan Matriks Kemiripan:*
+```python
+from sklearn.metrics.pairwise import linear_kernel
+# tfidf_matrix adalah hasil dari TfidfVectorizer().fit_transform(df['combined_features'])
+cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
+# print("Shape Cosine Similarity matrix:", cosine_sim.shape)
+```
+Matriks `cosine_sim` yang dihasilkan bersifat simetris dan berisi skor kemiripan antara setiap buku dengan semua buku lainnya. Matriks inilah yang menjadi inti dari mekanisme untuk menemukan rekomendasi.
 
-Fungsi `recommend_books` dibuat untuk mengambil judul buku sebagai input dan mengembalikan 10 buku teratas yang paling mirip berdasarkan skor *cosine similarity*.
+**Menghasilkan Rekomendasi Top-N:**
+
+Setelah matriks kemiripan `cosine_sim` tersedia, untuk menghasilkan rekomendasi Top-N bagi sebuah buku referensi (misalnya, buku yang dipilih pengguna), langkah-langkahnya adalah:
+1.  Identifikasi baris pada matriks `cosine_sim` yang bersesuaian dengan buku referensi tersebut. Baris ini berisi skor kemiripan buku referensi dengan semua buku lain di dataset.
+2.  Urutkan skor-skor kemiripan ini dari yang tertinggi hingga terendah.
+3.  Ambil N buku teratas dari daftar yang sudah terurut tersebut (setelah mengecualikan buku referensi itu sendiri). Buku-buku inilah yang dianggap paling mirip dan dijadikan rekomendasi.
+
+Langkah-langkah ini diimplementasikan dalam fungsi berikut:
+
+**Fungsi Rekomendasi (`recommend_books_tfidf`):**
+
+Fungsi `recommend_books_tfidf` dirancang untuk menerima judul buku sebagai input, kemudian menggunakan matriks `cosine_sim` untuk menemukan dan mengembalikan 10 buku teratas yang paling mirip.
 
 ```python
 def recommend_books_tfidf(title, cosine_sim=cosine_sim, df=df):
@@ -202,7 +213,7 @@ def recommend_books_tfidf(title, cosine_sim=cosine_sim, df=df):
 
     if book_row.empty:
         return "Book not found."
-    idx = book_row.index[0]
+    original_idx = book_row.index[0]
     try:
         positional_idx = df.index.get_loc(idx)
     except KeyError:
@@ -216,24 +227,24 @@ def recommend_books_tfidf(title, cosine_sim=cosine_sim, df=df):
     sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
     sim_scores = sim_scores[1:11]
     recommended_book_original_indices = [df.index[i[0]] for i in sim_scores]
-    recommended_book_indices_in_filtered_df = [i[0] for i in sim_scores]
+    recommended_book_indices = [i[0] for i in sim_scores]
     return df[['title', 'authors']].iloc[recommended_book_indices_in_filtered_df]
 ```
 
 **Contoh Penggunaan Model (Top-N Recommendation)**
 
-Berikut adalah contoh rekomendasi untuk buku 'The Hobbit':
+Berikut adalah contoh bagaimana fungsi `recommend_books_tfidf` digunakan untuk mendapatkan rekomendasi bagi buku 'The Hobbit':
 
 ```python
-print("\ntf-idf Recommendations untuk 'The Hobbit':")
-print(recommend_books_tfidf('The Hobbit'))
+print("\nTF-IDF Recommendations untuk 'The Hobbit':")
+recommendations = recommend_books_tfidf('The Hobbit')
+print(recommendations)
 ```
 
 **Output:**
 
 ```
 tf-idf Recommendations untuk 'The Hobbit':
-
                                                   title  \
 1699                The Hobbit: Or There and Back Again   
 1700                                         The Hobbit   
@@ -256,7 +267,7 @@ tf-idf Recommendations untuk 'The Hobbit':
 21                                       J.R.R. Tolkien  
 4595                 J.R.R. Tolkien/Christopher Tolkien  
 721   J.R.R. Tolkien/Humphrey Carpenter/Christopher ...  
-5254                 J.R.R. Tolkien/Christopher Tolkien
+5254                 J.R.R. Tolkien/Christopher Tolkien 
 ```
 
 **Kelebihan:**
@@ -276,22 +287,33 @@ tf-idf Recommendations untuk 'The Hobbit':
 
 ### **Pendekatan 2: Count Vectorization + Cosine Similarity**
 
-Setelah data diproses dengan Count Vectorization, langkah selanjutnya adalah membangun model content-based filtering menggunakan Cosine Similarity:
+Setelah data `combined_features` dari setiap buku diubah menjadi representasi vektor numerik menggunakan **Count Vectorization** – di mana setiap buku direpresentasikan oleh vektor yang berisi frekuensi kemunculan kata atau frasa (n-gram) – langkah selanjutnya adalah membangun model *content-based filtering*. Model ini juga memanfaatkan matriks kemiripan yang dihitung menggunakan Cosine Similarity.
 
-**Menghitung Cosine Similarity:**
+**Menghitung Matriks Kemiripan (Cosine Similarity):**
 
-*Cosine Similarity* adalah metrik yang mengukur kemiripan antara dua vektor non-nol dalam ruang vektor. Semakin dekat nilai *cosine similarity* ke 1, semakin mirip kedua item. Dalam konteks ini, kita menghitung *cosine similarity* antara setiap pasang buku berdasarkan vektor TF-IDF mereka. `linear_kernel` digunakan karena lebih cepat untuk menghitung *cosine similarity* ketika vektor sudah dinormalisasi (seperti hasil dari TF-IDF), **bertujuan untuk efisiensi komputasi** pada matriks yang besar.
-**Implementasi:**
-        ```python
-        from sklearn.metrics.pairwise import linear_kernel
-        cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
-        print("Shape Cosine Similarity matrix:", cosine_sim.shape)
-        ```
-        `cosine_sim` adalah matriks simetri yang menunjukkan tingkat kemiripan antara setiap buku dengan buku lainnya, menjadi inti dari mekanisme rekomendasi kita.
+*Cosine Similarity* adalah metrik yang mengukur kemiripan antara dua vektor non-nol. Dalam konteks ini, kita menghitung *cosine similarity* antara setiap pasang buku berdasarkan vektor frekuensi kata (count vectors) mereka. Skor yang mendekati 1 menandakan bahwa buku-buku tersebut berbagi banyak kata atau frasa yang sama dengan proporsi frekuensi yang serupa. Untuk menghitung matriks kemiripan dari `count_matrix` (hasil dari `CountVectorizer`), fungsi `cosine_similarity` dari `sklearn.metrics.pairwise` digunakan.
 
-**Fungsi Rekomendasi**
+*Implementasi Penghitungan Matriks Kemiripan:*
+```python
+from sklearn.metrics.pairwise import cosine_similarity
+# count_matrix adalah hasil dari CountVectorizer().fit_transform(df['combined_features'])
+cosine_sim_count = cosine_similarity(count_matrix, count_matrix)
+# print("Shape Cosine Similarity matrix (Count):", cosine_sim_count.shape)
+```
+Matriks `cosine_sim_count` yang dihasilkan bersifat simetris dan berisi skor kemiripan antara setiap buku dengan semua buku lainnya, berdasarkan frekuensi kata/frasa bersama. Matriks ini menjadi inti mekanisme rekomendasi untuk pendekatan ini.
 
-Fungsi `recommend_books` dibuat untuk mengambil judul buku sebagai input dan mengembalikan 10 buku teratas yang paling mirip berdasarkan skor *cosine similarity*.
+**Menghasilkan Rekomendasi Top-N:**
+
+Setelah matriks kemiripan `cosine_sim_count` tersedia, untuk menghasilkan rekomendasi Top-N bagi sebuah buku referensi, langkah-langkahnya adalah:
+1.  Identifikasi baris pada matriks `cosine_sim_count` yang bersesuaian dengan buku referensi. Baris ini berisi skor kemiripan buku referensi dengan semua buku lain.
+2.  Urutkan skor-skor kemiripan ini dari yang tertinggi hingga terendah.
+3.  Ambil N buku teratas dari daftar yang sudah terurut tersebut (setelah mengecualikan buku referensi itu sendiri). Buku-buku inilah yang dianggap paling mirip dan dijadikan rekomendasi.
+
+Langkah-langkah ini diimplementasikan dalam fungsi berikut:
+
+**Fungsi Rekomendasi (`recommend_books_count`):**
+
+Fungsi `recommend_books_count` dirancang untuk menerima judul buku sebagai input, kemudian menggunakan matriks `cosine_sim_count` untuk menemukan dan mengembalikan *k* (default 10) buku teratas yang paling mirip.
 
 ```python
 def recommend_books_count(title, cosine_sim=cosine_sim_count, df=df, k=10):
