@@ -157,8 +157,8 @@ Setelah data diproses dengan TF-IDF, langkah selanjutnya adalah membangun model 
 
 **Menghitung Cosine Similarity:**
 
-      * **Penjelasan:** *Cosine Similarity* adalah metrik yang mengukur kemiripan antara dua vektor non-nol dalam ruang vektor. Semakin dekat nilai *cosine similarity* ke 1, semakin mirip kedua item. Dalam konteks ini, kita menghitung *cosine similarity* antara setiap pasang buku berdasarkan vektor TF-IDF mereka. `linear_kernel` digunakan karena lebih cepat untuk menghitung *cosine similarity* ketika vektor sudah dinormalisasi (seperti hasil dari TF-IDF), **bertujuan untuk efisiensi komputasi** pada matriks yang besar.
-      * **Implementasi:**
+*Cosine Similarity* adalah metrik yang mengukur kemiripan antara dua vektor non-nol dalam ruang vektor. Semakin dekat nilai *cosine similarity* ke 1, semakin mirip kedua item. Dalam konteks ini, kita menghitung *cosine similarity* antara setiap pasang buku berdasarkan vektor TF-IDF mereka. `linear_kernel` digunakan karena lebih cepat untuk menghitung *cosine similarity* ketika vektor sudah dinormalisasi (seperti hasil dari TF-IDF), **bertujuan untuk efisiensi komputasi** pada matriks yang besar.
+**Implementasi:**
         ```python
         from sklearn.metrics.pairwise import linear_kernel
         cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
@@ -255,37 +255,32 @@ Content-Based Recommendations untuk 'The Hobbit':
 
 Sistem rekomendasi ini dievaluasi menggunakan metrik-metrik yang umum digunakan dalam sistem rekomendasi:
 
-1.  **Precision@K (P@K)**
-    Mengukur seberapa banyak dari *K* item yang direkomendasikan adalah benar-benar relevan.
+### 1. Precision@K (P@K)
+Mengukur seberapa banyak dari *K* item yang direkomendasikan adalah benar-benar relevan.
 
-    $$ Precision@K = \frac{\text{Jumlah item relevan dalam top K}}{K} $$
+**Formula**:
+Precision@K = (Jumlah item relevan dalam top K) / K
 
-2.  **Recall@K (R@K)**
-    Mengukur proporsi item relevan yang berhasil ditemukan dalam *K* rekomendasi.
+### 2. Recall@K (R@K)
+Mengukur proporsi item relevan yang ditemukan dalam top K rekomendasi.
 
-    $$
-    Recall@K = \frac{\text{Jumlah item relevan dalam top K}}{\text{Jumlah total item relevan}}
-    $$
+**Formula**:
+Recall@K = (Jumlah item relevan dalam top K) / (Jumlah total item relevan)
 
-3.  **F1@K**
-    Merupakan rata-rata harmonik dari Precision dan Recall, menunjukkan keseimbangan antara keduanya.
+### 3. F1@K
+Rata-rata harmonik antara Precision dan Recall.
 
-    $$
-    F1@K = \frac{2 \cdot Precision@K \cdot Recall@K}{Precision@K + Recall@K}
-    $$
+**Formula**:
+F1@K = 2 * Precision@K * Recall@K / (Precision@K + Recall@K)
 
-4.  **MAP@K (Mean Average Precision at K)**
-    Mengukur rata-rata presisi kumulatif hingga posisi K, memberikan bobot lebih pada rekomendasi yang relevan dan muncul lebih awal.
+### 4. MAP@K (Mean Average Precision at K)
+Rata-rata presisi kumulatif sampai posisi K, lebih menekankan posisi awal yang relevan.
 
-    $$
-    AP@K = \frac{1}{\text{Jumlah item relevan}} \sum_{k=1}^{K} P(k) \cdot rel(k)
-    $$
+**Formula**:
+AP@K = (1 / Jumlah item relevan) * ∑[k=1 to K] (P@k × rel(k))  
+MAP@K = (1 / N) * ∑[i=1 to N] AP@K_i
 
-    $$
-    MAP@K = \frac{1}{N} \sum_{i=1}^{N} AP@K_i
-    $$
-
-    dengan $rel(k) = 1$ jika item pada posisi ke-*k* relevan, dan 0 jika tidak.
+dengan rel(k) = 1 jika item pada posisi ke-*k* relevan, dan 0 jika tidak.
 
 ---
 
