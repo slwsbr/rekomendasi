@@ -170,7 +170,7 @@ tfidf_matrix = vectorizer.fit_transform(df['combined_features'])
 ### **Membangun Sistem Rekomendasi Content-Based Filtering**
 Pada tahap ini, model sistem rekomendasi content-based filtering dibangun menggunakan fitur-fitur yang telah dipersiapkan. Dua pendekatan solusi diimplementasikan:
 
-**Pendekatan 1: TF-IDF Vectorization + Cosine Similarity**
+### **Pendekatan 1: TF-IDF Vectorization + Cosine Similarity**
 
 Setelah data diproses dengan TF-IDF, langkah selanjutnya adalah membangun model content-based filtering menggunakan Cosine Similarity:
 
@@ -185,7 +185,7 @@ Setelah data diproses dengan TF-IDF, langkah selanjutnya adalah membangun model 
         ```
         `cosine_sim` adalah matriks simetri yang menunjukkan tingkat kemiripan antara setiap buku dengan buku lainnya, menjadi inti dari mekanisme rekomendasi kita.
 
-### **Fungsi Rekomendasi**
+**Fungsi Rekomendasi**
 
 Fungsi `recommend_books` dibuat untuk mengambil judul buku sebagai input dan mengembalikan 10 buku teratas yang paling mirip berdasarkan skor *cosine similarity*.
 
@@ -213,12 +213,12 @@ def recommend_books_tfidf(title, cosine_sim=cosine_sim, df=df):
     return df[['title', 'authors']].iloc[recommended_book_indices_in_filtered_df]
 ```
 
-### **Contoh Penggunaan Model (Top-N Recommendation)**
+**Contoh Penggunaan Model (Top-N Recommendation)**
 
 Berikut adalah contoh rekomendasi untuk buku 'The Hobbit':
 
 ```python
-print("\nContent-Based Recommendations untuk 'The Hobbit':")
+print("\ntf-idf Recommendations untuk 'The Hobbit':")
 print(recommend_books_tfidf('The Hobbit'))
 ```
 
@@ -251,8 +251,9 @@ tf-idf Recommendations untuk 'The Hobbit':
 721   J.R.R. Tolkien/Humphrey Carpenter/Christopher ...  
 5254                 J.R.R. Tolkien/Christopher Tolkien 
 ```
+-- 
 
-**Pendekatan 2: Count Vectorization + Cosine Similarity**
+### **Pendekatan 2: Count Vectorization + Cosine Similarity**
 
 Setelah data diproses dengan Count Vectorization, langkah selanjutnya adalah membangun model content-based filtering menggunakan Cosine Similarity:
 
@@ -267,7 +268,7 @@ Setelah data diproses dengan Count Vectorization, langkah selanjutnya adalah mem
         ```
         `cosine_sim` adalah matriks simetri yang menunjukkan tingkat kemiripan antara setiap buku dengan buku lainnya, menjadi inti dari mekanisme rekomendasi kita.
 
-### **Fungsi Rekomendasi**
+**Fungsi Rekomendasi**
 
 Fungsi `recommend_books` dibuat untuk mengambil judul buku sebagai input dan mengembalikan 10 buku teratas yang paling mirip berdasarkan skor *cosine similarity*.
 
@@ -287,7 +288,7 @@ def recommend_books_count(title, cosine_sim=cosine_sim_count, df=df, k=10):
     return df[['title', 'authors']].iloc[rec_indices]
 ```
 
-### **Contoh Penggunaan Model (Top-N Recommendation)**
+**Contoh Penggunaan Model (Top-N Recommendation)**
 
 Berikut adalah contoh rekomendasi untuk buku 'The Hobbit':
 
