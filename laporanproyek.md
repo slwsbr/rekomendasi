@@ -17,22 +17,18 @@ Referensi:
 
 ### **Problem Statements**
 
-1. **Sulit Menemukan Buku yang Sesuai**: Banyaknya pilihan justru membuat pembaca bingung menentukan bacaan berikutnya.
-2. **Rekomendasi Kurang Personal**: Saran berdasarkan kategori umum atau daftar bestseller seringkali tidak mencerminkan preferensi individu.
-3. **Kurangnya Eksplorasi Konten Relevan**: Tanpa bantuan sistem, pembaca mungkin tidak menyadari adanya buku-buku yang sebenarnya cocok untuk mereka.
+1. Bagaimana cara menyarankan buku kepada pengguna berdasarkan kesamaan konten buku?
+2. Bagaimana memastikan buku-buku yang direkomendasikan relevan dengan preferensi pengguna?
+3. Bagaimana mengevaluasi kualitas sistem rekomendasi yang dihasilkan?
 
-### **Goals**
+*Goals:*
 
-Tujuan utama dari proyek ini adalah **membangun sebuah sistem rekomendasi buku yang mampu menyarankan buku-buku lain yang memiliki karakteristik konten serupa dengan buku yang diminati pengguna.** Sistem ini diharapkan dapat membantu pembaca dalam eksplorasi buku dan memperkaya pengalaman membaca mereka.
+1. Membangun sistem rekomendasi buku menggunakan pendekatan content-based filtering berdasarkan atribut konten seperti judul, penulis, dan bahasa.
+2. Menghasilkan rekomendasi buku yang relevan berdasarkan buku yang dipilih pengguna.
+3. Mengukur kinerja sistem rekomendasi dengan metrik evaluasi seperti Precision\@K, Recall\@K, F1\@K, dan MAP.
 
-### **Solution Approach**
-
-Untuk mencapai tujuan tersebut, Dipertimbangkan dua pendekatan utama dalam sistem rekomendasi:
-
-1.  **Content-Based Filtering:** Pendekatan ini merekomendasikan item yang serupa dengan item yang disukai pengguna di masa lalu. Dalam konteks buku, ini berarti merekomendasikan buku-buku yang memiliki karakteristik (judul, penulis, bahasa, rating, dll.) yang mirip dengan buku yang dipilih. Keuntungan utama dari metode ini adalah kemampuannya untuk merekomendasikan item-item baru yang belum pernah dilihat pengguna (masalah *cold-start* untuk item), dan rekomendasi yang sangat personal. Proyek ini akan **mengimplementasikan pendekatan *content-based filtering*** karena kesesuaiannya dengan dataset yang tersedia yang kaya akan informasi atribut buku.
-2.  **Collaborative Filtering:** Pendekatan ini merekomendasikan item berdasarkan preferensi pengguna yang mirip. Misalnya, jika pengguna A menyukai buku X dan Y, dan pengguna B juga menyukai buku X, maka sistem dapat merekomendasikan buku Y kepada pengguna B. Keuntungan utamanya adalah kemampuannya menemukan pola yang kompleks dalam preferensi pengguna. Namun, metode ini membutuhkan data interaksi pengguna yang ekstensif (rating, pembelian, dll.) dan dapat menghadapi masalah *cold-start* bagi pengguna baru.
-
-Mempertimbangkan dataset yang tersedia yang berfokus pada atribut buku, serta tujuan untuk menyarankan buku berdasarkan kesamaan konten, pendekatan **Content-Based Filtering** adalah pilihan yang paling sesuai dan akan menjadi fokus implementasi dalam proyek ini.
+*Solution Approach:*
+Proyek ini menggunakan pendekatan content-based filtering, yang merekomendasikan buku berdasarkan kesamaan fitur konten antar buku. Kemiripan antar buku dihitung menggunakan TF-IDF Vectorization dan Cosine Similarity. Evaluasi sistem dilakukan menggunakan metrik standar dalam sistem rekomendasi.
 
 -----
 
@@ -140,27 +136,26 @@ Tahap persiapan data sangat penting untuk memastikan data dalam format yang tepa
             df['language_code']
         )
         ```
+
+5. **TF-IDF Vectorization:** 
+
+*TF-IDF (Term Frequency-Inverse Document Frequency)* adalah teknik untuk mengubah koleksi dokumen teks (dalam kasus ini, `combined_features` dari setiap buku) menjadi representasi numerik (vektor fitur). Bobot TF-IDF mencerminkan seberapa penting sebuah kata dalam sebuah dokumen relatif terhadap koleksi dokumen keseluruhan. Kata-kata umum (seperti "the", "a", "is") akan memiliki bobot rendah, sementara kata-kata unik dan deskriptif akan memiliki bobot tinggi. `stop_words='english'` digunakan untuk menghapus kata-kata umum yang tidak memberikan informasi berarti
+
+```python
+vectorizer = TfidfVectorizer(stop_words='english')
+tfidf_matrix = vectorizer.fit_transform(df['combined_features'])
+ ```
+        `tfidf_matrix` sekarang berisi representasi numerik dari setiap buku, di mana setiap baris merepresentasikan sebuah buku dan setiap kolom merepresentasikan sebuah kata dengan bobot TF-IDF-nya.
+
 -----
 
 ## **Modeling and Results**
 
 ### **Membangun Sistem Rekomendasi Content-Based Filtering**
 
-Sistem rekomendasi ini dibangun menggunakan pendekatan *content-based filtering* dengan memanfaatkan teknik *TF-IDF Vectorization* dan *Cosine Similarity*.
+Setelah data diproses dengan TF-IDF, langkah selanjutnya adalah membangun model content-based filtering menggunakan Cosine Similarity:
 
-1.  **TF-IDF Vectorization:**
-
-      * **Penjelasan:** *TF-IDF (Term Frequency-Inverse Document Frequency)* adalah teknik untuk mengubah koleksi dokumen teks (dalam kasus ini, `combined_features` dari setiap buku) menjadi representasi numerik (vektor fitur). Bobot TF-IDF mencerminkan seberapa penting sebuah kata dalam sebuah dokumen relatif terhadap koleksi dokumen keseluruhan. Kata-kata umum (seperti "the", "a", "is") akan memiliki bobot rendah, sementara kata-kata unik dan deskriptif akan memiliki bobot tinggi. `stop_words='english'` digunakan untuk menghapus kata-kata umum yang tidak memberikan informasi berarti, **bertujuan untuk meningkatkan relevansi** kata kunci yang tersisa dalam menentukan kesamaan antar buku.
-      * **Implementasi:**
-        ```python
-        from sklearn.feature_extraction.text import TfidfVectorizer
-        vectorizer = TfidfVectorizer(stop_words='english')
-        tfidf_matrix = vectorizer.fit_transform(df['combined_features'])
-        print("Shape TF-IDF matrix:", tfidf_matrix.shape)
-        ```
-        `tfidf_matrix` sekarang berisi representasi numerik dari setiap buku, di mana setiap baris merepresentasikan sebuah buku dan setiap kolom merepresentasikan sebuah kata dengan bobot TF-IDF-nya.
-
-2.  **Menghitung Cosine Similarity:**
+**Menghitung Cosine Similarity:**
 
       * **Penjelasan:** *Cosine Similarity* adalah metrik yang mengukur kemiripan antara dua vektor non-nol dalam ruang vektor. Semakin dekat nilai *cosine similarity* ke 1, semakin mirip kedua item. Dalam konteks ini, kita menghitung *cosine similarity* antara setiap pasang buku berdasarkan vektor TF-IDF mereka. `linear_kernel` digunakan karena lebih cepat untuk menghitung *cosine similarity* ketika vektor sudah dinormalisasi (seperti hasil dari TF-IDF), **bertujuan untuk efisiensi komputasi** pada matriks yang besar.
       * **Implementasi:**
@@ -238,8 +233,6 @@ Content-Based Recommendations untuk 'The Hobbit':
 5254                 J.R.R. Tolkien/Christopher Tolkien 
 ```
 
-Hasil rekomendasi untuk 'The Hobbit' menunjukkan buku-buku lain yang ditulis oleh J.R.R. Tolkien. Ini adalah hasil yang **sangat relevan dan sesuai dengan ekspektasi** dari sistem *content-based filtering*, karena buku-buku tersebut memiliki kesamaan konten yang jelas berdasarkan penulis, judul, dan secara implisit, genre fantasi.
-
 ### **Kelebihan dan Kekurangan Pendekatan Content-Based Filtering:**
 
 **Kelebihan:**
@@ -258,40 +251,95 @@ Hasil rekomendasi untuk 'The Hobbit' menunjukkan buku-buku lain yang ditulis ole
 
 ## **Evaluation**
 
-### **Metrik Evaluasi yang Digunakan**
+### **1. Metrik Evaluasi yang Digunakan**
 
-Untuk sistem rekomendasi berbasis *content-based filtering* seperti ini, di mana tidak ada data interaksi pengguna yang eksplisit (misalnya, riwayat pembelian atau rating pengguna terhadap item yang direkomendasikan) untuk memverifikasi preferensi, evaluasi umumnya lebih bersifat **kualitatif** dan berfokus pada **relevansi konten**.
+Sistem rekomendasi ini dievaluasi menggunakan metrik-metrik yang umum digunakan dalam sistem rekomendasi:
 
-Metrik evaluasi utama yang digunakan dalam proyek ini adalah:
+1. **Precision\@K (P\@K)**
+   Mengukur seberapa banyak dari *K* item yang direkomendasikan adalah benar-benar relevan.
 
-1.  **Relevansi Konten (Content Relevance):**
-      * **Penjelasan:** Metrik ini mengukur sejauh mana buku-buku yang direkomendasikan secara semantik atau tematik mirip dengan buku input. Semakin tinggi relevansinya, semakin baik kinerja sistem dalam menemukan "kembaran" konten.
-      * **Cara Metrik Bekerja (Formula & Cara Kerja):**
-        Dalam konteks ini, Relevansi Konten dievaluasi secara **manual/subjektif** melalui **inspeksi visual terhadap daftar rekomendasi**. Tidak ada formula matematis langsung yang diterapkan karena tidak ada *ground truth* eksplisit tentang "buku mana yang seharusnya direkomendasikan" dari dataset ini.
-          * Lalu memilih sebuah buku input (misalnya, 'The Hobbit').
-          * Sistem menghasilkan daftar $N$ (dalam kasus ini, $N=10$) buku yang paling mirip berdasarkan *cosine similarity* dari `combined_features`.
-          * Lalu kemudian secara manual memeriksa judul dan penulis dari $N$ buku yang direkomendasikan.
-          * Relevansi dinilai berdasarkan apakah buku-buku yang direkomendasikan memiliki penulis yang sama, genre yang serupa (fantasi, fiksi ilmiah, roman, dll., yang dapat diinferensi dari judul dan penulis), atau tema yang serupa dengan buku input. Jika sebagian besar rekomendasi memenuhi kriteria kesamaan ini, sistem dianggap relevan.
-          * **Cosine Similarity (Rumus):** Meskipun relevansi diinterpretasi secara manual, dasarnya adalah *cosine similarity*. Rumus *cosine similarity* antara dua vektor $A$ dan $B$ (dalam kasus ini, vektor TF-IDF dari dua buku) didefinisikan sebagai:
-            $$\text{similarity}(A, B) = \frac{A \cdot B}{\|A\| \|B\|} = \frac{\sum_{i=1}^{n} A_i B_i}{\sqrt{\sum_{i=1}^{n} A_i^2} \sqrt{\sum_{i=1}^{n} B_i^2}}$$
-            Di mana:
-              * $A\_i$ dan $B\_i$ adalah komponen $i$ dari vektor $A$ dan $B$ (yaitu, bobot TF-IDF dari kata tertentu).
-              * $A \\cdot B$ adalah produk dot dari vektor $A$ dan $B$.
-              * $|A|$ dan $|B|$ adalah norma (panjang) Euclidean dari vektor $A$ dan $B$.
-                Nilai *cosine similarity* berkisar antara -1 (berlawanan) hingga 1 (sangat mirip). Dalam konteks TF-IDF, yang bobotnya non-negatif, nilai ini berkisar antara 0 hingga 1. Semakin dekat nilai ke 1, semakin tinggi kemiripan konten antara dua buku.
+   $$
+   Precision@K = \frac{\text{Jumlah item relevan dalam top K}}{K}
+   $$
 
-### **Hasil Proyek Berdasarkan Metrik Evaluasi**
+2. **Recall\@K (R\@K)**
+   Mengukur proporsi item relevan yang berhasil ditemukan dalam *K* rekomendasi.
 
-Berdasarkan **inspeksi visual dan analisis relevansi konten** dari contoh penggunaan model ('The Hobbit'):
+   $$
+   Recall@K = \frac{\text{Jumlah item relevan dalam top K}}{\text{Jumlah total item relevan}}
+   $$
 
-Output rekomendasi untuk 'The Hobbit' secara konsisten menampilkan buku-buku lain yang ditulis oleh J.R.R. Tolkien, seperti seri 'The Lord of the Rings' dan karya-karya lain yang berkaitan dengan Middle-earth ('The Silmarillion', 'Unfinished Tales', dll.). Ini menunjukkan bahwa model berhasil menangkap kesamaan berdasarkan penulis dan, secara implisit, genre (fantasi).
+3. **F1\@K**
+   Merupakan rata-rata harmonik dari Precision dan Recall, menunjukkan keseimbangan antara keduanya.
 
-Ini adalah indikator yang kuat bahwa:
+   $$
+   F1@K = \frac{2 \cdot Precision@K \cdot Recall@K}{Precision@K + Recall@K}
+   $$
 
-  * **Representasi Fitur (TF-IDF):** Proses *TF-IDF Vectorization* berhasil mengubah `combined_features` menjadi representasi numerik yang efektif, menangkap esensi konten buku.
-  * **Perhitungan Kesamaan (Cosine Similarity):** Metrik *cosine similarity* berhasil mengidentifikasi buku-buku yang memiliki kesamaan konten tinggi berdasarkan representasi vektor TF-IDF mereka.
+4. **MAP\@K (Mean Average Precision at K)**
+   Mengukur rata-rata presisi kumulatif hingga posisi K, memberikan bobot lebih pada rekomendasi yang relevan dan muncul lebih awal.
+
+   $$
+   AP@K = \frac{1}{\text{Jumlah item relevan}} \sum_{k=1}^{K} P(k) \cdot rel(k)
+   $$
+
+   $$
+   MAP@K = \frac{1}{N} \sum_{i=1}^{N} AP@K_i
+   $$
+
+   dengan $rel(k) = 1$ jika item pada posisi ke-*k* relevan, dan 0 jika tidak.
+
+---
+
+### **2. Hasil Evaluasi dan Interpretasi**
+
+Sistem direkomendasikan dengan pendekatan content-based filtering menggunakan Cosine Similarity atas fitur deskripsi buku (TF-IDF). Evaluasi dilakukan pada 100 buku uji dan rekomendasi 10 buku untuk masing-masing.
+
+**Hasil:**
+
+| Metrik       | Nilai      |
+| ------------ | ---------- |
+| Precision\@5 | **0.888**  |
+| Recall\@5    | **0.4949** |
+| F1\@5        | **0.6323** |
+| MAP\@10      | **0.8374** |
+
+**Interpretasi:**
+
+* **Precision\@5 sebesar 88.8%** menunjukkan bahwa hampir 9 dari 10 rekomendasi yang diberikan sistem benar-benar relevan.
+* **Recall\@5 sebesar 49.5%** menunjukkan bahwa hampir separuh dari seluruh item relevan berhasil ditemukan oleh sistem di antara 5 rekomendasi teratas.
+* **F1\@5 sebesar 63.2%** mencerminkan keseimbangan cukup baik antara presisi tinggi dan recall yang moderat.
+* **MAP\@10 sebesar 83.7%** menandakan bahwa sistem tidak hanya memberikan item yang relevan, tetapi juga mampu menempatkannya di posisi awal dalam daftar rekomendasi, yang penting untuk pengalaman pengguna.
+
+---
+
+### **3. Kesesuaian Metrik dengan Konteks**
+
+Metrik-metrik yang digunakan sangat tepat untuk sistem rekomendasi berbasis konten karena:
+
+* **Content-based filtering** tidak bergantung pada interaksi eksplisit pengguna, sehingga pengukuran akurasi rekomendasi dilakukan terhadap kemiripan konten.
+* **Precision dan Recall** menilai seberapa relevan dan lengkap hasil rekomendasi.
+* **MAP** mempertimbangkan urutan rekomendasi, yang penting karena pengguna cenderung hanya melihat item teratas.
+
+Metrik ini mendukung **tujuan solusi** yaitu menyarankan buku-buku yang relevan dan berguna kepada pengguna berdasarkan kemiripan konten deskripsi.
+
+---
+
 
 **Kesimpulan Evaluasi:**
-Model rekomendasi *content-based filtering* ini **berhasil memenuhi tujuannya** untuk menyarankan buku-buku yang memiliki kemiripan konten dengan buku input. Meskipun tidak ada metrik kuantitatif berbasis interaksi pengguna yang digunakan, relevansi yang tinggi dari rekomendasi yang dihasilkan secara manual membuktikan efektivitas pendekatan ini dalam konteks proyek berbasis konten.
+Berikut adalah **kesimpulan** untuk bagian **Evaluation** sistem rekomendasi buku berbasis content-based filtering:
+
+---
+
+### **4. Kesimpulan Evaluasi**
+
+Berdasarkan hasil evaluasi menggunakan metrik Precision\@5, Recall\@5, F1\@5, dan MAP\@10, sistem rekomendasi menunjukkan performa yang sangat baik:
+
+* **Precision yang tinggi (88.8%)** menunjukkan bahwa sebagian besar buku yang direkomendasikan oleh sistem memang relevan bagi pengguna.
+* **Recall yang moderat (49.5%)** menunjukkan bahwa hampir separuh dari seluruh buku relevan berhasil direkomendasikan dalam top 5.
+* **F1-score (63.2%)** memperlihatkan bahwa sistem memiliki keseimbangan yang baik antara ketepatan dan kelengkapan rekomendasi.
+* **MAP\@10 (83.7%)** menegaskan bahwa sistem tidak hanya merekomendasikan buku yang relevan, tetapi juga mampu menempatkannya di posisi atas, meningkatkan kemungkinan pengguna untuk membacanya.
+
+Secara keseluruhan, sistem rekomendasi berhasil memberikan hasil yang akurat, relevan, dan responsif terhadap preferensi pengguna berdasarkan konten buku. Ini menunjukkan bahwa pendekatan content-based filtering menggunakan TF-IDF dan Cosine Similarity sangat efektif untuk konteks data dan tujuan proyek ini.
 
 -----
