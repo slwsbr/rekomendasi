@@ -21,13 +21,13 @@ Referensi:
 2. Bagaimana memastikan buku-buku yang direkomendasikan relevan dengan preferensi pengguna?
 3. Bagaimana mengevaluasi kualitas sistem rekomendasi yang dihasilkan?
 
-*Goals:*
+### **Goals**
 
 1. Membangun sistem rekomendasi buku menggunakan pendekatan content-based filtering berdasarkan atribut konten seperti judul, penulis, dan bahasa.
 2. Menghasilkan rekomendasi buku yang relevan berdasarkan buku yang dipilih pengguna.
 3. Mengukur kinerja sistem rekomendasi dengan metrik evaluasi seperti Precision\@K, Recall\@K, F1\@K, dan MAP.
 
-*Solution Approach:*
+### **Solution Approach**
 Proyek ini menggunakan pendekatan content-based filtering, yang merekomendasikan buku berdasarkan kesamaan fitur konten antar buku. Kemiripan antar buku dihitung menggunakan TF-IDF Vectorization dan Cosine Similarity. Evaluasi sistem dilakukan menggunakan metrik standar dalam sistem rekomendasi.
 
 -----
@@ -322,12 +322,6 @@ Metrik-metrik yang digunakan sangat tepat untuk sistem rekomendasi berbasis kont
 * **MAP** mempertimbangkan urutan rekomendasi, yang penting karena pengguna cenderung hanya melihat item teratas.
 
 Metrik ini mendukung **tujuan solusi** yaitu menyarankan buku-buku yang relevan dan berguna kepada pengguna berdasarkan kemiripan konten deskripsi.
-
----
-
-
-**Kesimpulan Evaluasi:**
-Berikut adalah **kesimpulan** untuk bagian **Evaluation** sistem rekomendasi buku berbasis content-based filtering:
 
 ---
 
