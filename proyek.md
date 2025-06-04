@@ -386,26 +386,26 @@ Karena ini adalah sistem berbasis konten dan tidak ada data interaksi eksplisit 
 
 Sistem rekomendasi ini dievaluasi menggunakan metrik-metrik yang umum digunakan dalam sistem rekomendasi:
 
-1. Precision@K (P@K)
+1. Precision@K (P@K) \
 Mengukur seberapa banyak dari K item yang direkomendasikan adalah item yang benar-benar relevan. Metrik ini menilai ketepatan dari rekomendasi yang diberikan pada K posisi teratas.
 
 **Formula:**
 $$\text{Precision@K} = \frac{\text{Jumlah item relevan dalam K rekomendasi teratas}}{K}$$
 
-2. Recall@K (R@K)
+2. Recall@K (R@K) \
 Mengukur proporsi item relevan yang berhasil ditemukan dan direkomendasikan dalam K item teratas, dibandingkan dengan total item relevan yang ada. Metrik ini menilai kelengkapan atau cakupan rekomendasi.
 
 **Formula**:
 $$\text{Recall@K} = \frac{\text{Jumlah item relevan dalam K rekomendasi teratas}}{\text{Total jumlah item relevan dalam ground truth}}$$
 
 
-3. F1@K
+3. F1@K \
 Merupakan rata-rata harmonik dari Precision@K dan Recall@K. Rata-rata harmonik digunakan karena memberikan bobot yang seimbang pada kedua metrik dan cenderung lebih rendah jika salah satu metrik memiliki nilai yang sangat rendah, sehingga cocok untuk kasus di mana keseimbangan antara presisi dan recall diinginkan.
 
 **Formula**:
 $$\text{F1@K} = 2 \times \frac{\text{Precision@K} \times \text{Recall@K}}{\text{Precision@K} + \text{Recall@K}}$$
 
-4. MAP@K (Mean Average Precision at K)
+4. MAP@K (Mean Average Precision at K) \
 MAP@K memberikan skor rata-rata dari Average Precision untuk semua query. AP@K sendiri mempertimbangkan urutan item relevan dalam daftar rekomendasi; item relevan yang muncul di posisi lebih atas mendapat bobot lebih tinggi. Ini metrik yang baik untuk menilai performa ranking.
 
 **Formula**:
