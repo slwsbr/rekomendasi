@@ -145,7 +145,7 @@ Tahap persiapan data sangat penting untuk memastikan data dalam format yang tepa
 vectorizer = TfidfVectorizer(stop_words='english')
 tfidf_matrix = vectorizer.fit_transform(df['combined_features'])
  ```
-        `tfidf_matrix` sekarang berisi representasi numerik dari setiap buku, di mana setiap baris merepresentasikan sebuah buku dan setiap kolom merepresentasikan sebuah kata dengan bobot TF-IDF-nya.
+`tfidf_matrix` sekarang berisi representasi numerik dari setiap buku, di mana setiap baris merepresentasikan sebuah buku dan setiap kolom merepresentasikan sebuah kata dengan bobot TF-IDF-nya.
 
 -----
 
