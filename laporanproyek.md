@@ -255,37 +255,37 @@ Content-Based Recommendations untuk 'The Hobbit':
 
 Sistem rekomendasi ini dievaluasi menggunakan metrik-metrik yang umum digunakan dalam sistem rekomendasi:
 
-1. **Precision\@K (P\@K)**
-   Mengukur seberapa banyak dari *K* item yang direkomendasikan adalah benar-benar relevan.
+1.  **Precision@K (P@K)**
+    Mengukur seberapa banyak dari *K* item yang direkomendasikan adalah benar-benar relevan.
 
-   $$ Precision@K = \frac{\text{Jumlah item relevan dalam top K}}{K} $$
+    $$ Precision@K = \frac{\text{Jumlah item relevan dalam top K}}{K} $$
 
-2. **Recall\@K (R\@K)**
-   Mengukur proporsi item relevan yang berhasil ditemukan dalam *K* rekomendasi.
+2.  **Recall@K (R@K)**
+    Mengukur proporsi item relevan yang berhasil ditemukan dalam *K* rekomendasi.
 
-   $$
-   Recall@K = \frac{\text{Jumlah item relevan dalam top K}}{\text{Jumlah total item relevan}}
-   $$
+    $$
+    Recall@K = \frac{\text{Jumlah item relevan dalam top K}}{\text{Jumlah total item relevan}}
+    $$
 
-3. **F1\@K**
-   Merupakan rata-rata harmonik dari Precision dan Recall, menunjukkan keseimbangan antara keduanya.
+3.  **F1@K**
+    Merupakan rata-rata harmonik dari Precision dan Recall, menunjukkan keseimbangan antara keduanya.
 
-   $$
-   F1@K = \frac{2 \cdot Precision@K \cdot Recall@K}{Precision@K + Recall@K}
-   $$
+    $$
+    F1@K = \frac{2 \cdot Precision@K \cdot Recall@K}{Precision@K + Recall@K}
+    $$
 
-4. **MAP\@K (Mean Average Precision at K)**
-   Mengukur rata-rata presisi kumulatif hingga posisi K, memberikan bobot lebih pada rekomendasi yang relevan dan muncul lebih awal.
+4.  **MAP@K (Mean Average Precision at K)**
+    Mengukur rata-rata presisi kumulatif hingga posisi K, memberikan bobot lebih pada rekomendasi yang relevan dan muncul lebih awal.
 
-   $$
-   AP@K = \frac{1}{\text{Jumlah item relevan}} \sum_{k=1}^{K} P(k) \cdot rel(k)
-   $$
+    $$
+    AP@K = \frac{1}{\text{Jumlah item relevan}} \sum_{k=1}^{K} P(k) \cdot rel(k)
+    $$
 
-   $$
-   MAP@K = \frac{1}{N} \sum_{i=1}^{N} AP@K_i
-   $$
+    $$
+    MAP@K = \frac{1}{N} \sum_{i=1}^{N} AP@K_i
+    $$
 
-   dengan $rel(k) = 1$ jika item pada posisi ke-*k* relevan, dan 0 jika tidak.
+    dengan $rel(k) = 1$ jika item pada posisi ke-*k* relevan, dan 0 jika tidak.
 
 ---
 
