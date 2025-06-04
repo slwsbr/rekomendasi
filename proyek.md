@@ -249,9 +249,23 @@ tf-idf Recommendations untuk 'The Hobbit':
 21                                       J.R.R. Tolkien  
 4595                 J.R.R. Tolkien/Christopher Tolkien  
 721   J.R.R. Tolkien/Humphrey Carpenter/Christopher ...  
-5254                 J.R.R. Tolkien/Christopher Tolkien 
+5254                 J.R.R. Tolkien/Christopher Tolkien
 ```
--- 
+
+**Kelebihan:**
+
+* **Pembobotan Signifikansi Kata**: TF-IDF memberikan bobot lebih tinggi pada kata-kata yang sering muncul dalam satu dokumen (**TF - Term Frequency**) tetapi jarang muncul di dokumen-dokumen lain dalam keseluruhan koleksi (**IDF - Inverse Document Frequency**). Ini berarti kata-kata yang lebih unik dan deskriptif untuk suatu dokumen akan memiliki pengaruh lebih besar dalam perhitungan kemiripan, sementara kata-kata umum (seperti "yang", "dan", "di") akan mendapatkan bobot rendah (atau dihilangkan jika menggunakan *stop words*).
+* **Mengurangi Noise dari Kata Umum**: Dengan adanya komponen IDF, kata-kata yang umum di banyak dokumen secara otomatis mendapat bobot lebih rendah, sehingga mengurangi "kebisingan" dan membantu fokus pada kata-kata yang lebih membedakan.
+* **Performa Baik pada Umumnya**: Seringkali memberikan hasil yang baik dan relevan untuk berbagai tugas pencarian informasi dan sistem rekomendasi berbasis konten karena kemampuannya menangkap pentingnya kata secara kontekstual dalam korpus.
+
+**Kekurangan:**
+
+* **Tidak Memperhatikan Urutan Kata**: Sama seperti Count Vectorizer, TF-IDF dasar tidak memperhitungkan urutan kata atau struktur semantik kalimat. Dua kalimat dengan kata yang sama tetapi urutan berbeda (dan makna berbeda) bisa dianggap mirip.
+* **Vocabulary Besar**: Jika tidak ada penyaringan (seperti `min_df`), vocabulary bisa menjadi sangat besar, terutama dengan korpus yang beragam, yang dapat mempengaruhi kebutuhan memori dan komputasi.
+* **Kurang Efektif untuk Teks Pendek**: IDF bisa menjadi kurang stabil atau kurang bermakna jika dokumen (teks) sangat pendek karena frekuensi kata menjadi kurang representatif.
+* **Tidak Menangkap Sinonim atau Makna Terkait**: TF-IDF bekerja pada level kata. Kata "mobil" dan "kendaraan roda empat" akan dianggap berbeda total meskipun maknanya mirip, kecuali ada teknik tambahan seperti penggunaan Word Embeddings.
+
+---
 
 ### **Pendekatan 2: Count Vectorization + Cosine Similarity**
 
@@ -326,6 +340,22 @@ Count-Based Recommendations untuk 'The Hobbit':
 21                        J.R.R. Tolkien  
 4595  J.R.R. Tolkien/Christopher Tolkien   
 ```
+
+**Kelebihan:**
+
+* **Sederhana dan Cepat**: Konsepnya sangat lugas, yaitu hanya menghitung frekuensi kemunculan kata. Implementasinya juga cenderung lebih cepat dibandingkan metode yang lebih kompleks.
+* **Dasar yang Baik**: Merupakan representasi dasar yang baik untuk teks dan seringkali menjadi *baseline* yang bagus untuk dibandingkan dengan teknik lain.
+* **Bisa Menangkap Konteks Lokal dengan N-grams**: Jika dikombinasikan dengan N-grams (seperti bigram atau trigram, contoh `ngram_range=(1,2)`), Count Vectorizer dapat menangkap beberapa konteks lokal dan frasa pendek. Misalnya, "machine learning" sebagai bigram akan dianggap berbeda dari kata "machine" dan "learning" secara terpisah.
+
+**Kekurangan:**
+
+* **Memberi Bobot Sama pada Semua Kata (Relatif)**: Kata-kata yang sangat umum (seperti "the", "is", "a" jika tidak dihilangkan dengan *stop words*) akan memiliki frekuensi tinggi dan bisa mendominasi perhitungan kemiripan, meskipun kata tersebut tidak terlalu informatif untuk membedakan konten.
+* **Tidak Membedakan Pentingnya Kata**: Tidak ada mekanisme bawaan (seperti IDF pada TF-IDF) untuk menilai seberapa penting atau unik sebuah kata dalam keseluruhan koleksi dokumen. Kata yang muncul di semua dokumen akan tetap dihitung frekuensinya di masing-masing dokumen.
+* **Rentan terhadap Panjang Dokumen**: Dokumen yang lebih panjang secara alami akan memiliki jumlah kata yang lebih tinggi, yang dapat mempengaruhi perhitungan kemiripan jika tidak dinormalisasi dengan baik (meskipun Cosine Similarity sendiri membantu dalam normalisasi ini).
+* **Tidak Memperhatikan Urutan Kata (untuk Unigram)**: Jika hanya menggunakan unigram (kata tunggal), urutan kata dan makna kalimat akan hilang.
+* **Tidak Menangkap Sinonim**: Sama seperti TF-IDF, Count Vectorizer tidak dapat mengidentifikasi sinonim atau kata-kata dengan makna serupa.
+
+----
 
 ### **Kelebihan dan Kekurangan Pendekatan Content-Based Filtering:**
 
