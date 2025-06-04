@@ -389,7 +389,7 @@ dengan rel(k) = 1 jika item pada posisi ke-*k* relevan, dan 0 jika tidak.
 
 Berikut adalah hasil evaluasi untuk kedua model dengan K=5 untuk Precision, Recall, F1, dan K=10 untuk MAP.
 
-Model 1: TF-IDF + Cosine Similarity
+### Model 1: TF-IDF + Cosine Similarity
 
 **Hasil:**
 
@@ -407,7 +407,7 @@ Model 1: TF-IDF + Cosine Similarity
 * **F1\@5 sebesar 63.2%** mencerminkan keseimbangan cukup baik antara presisi tinggi dan recall yang moderat.
 * **MAP\@10 sebesar 83.7%** menandakan bahwa sistem tidak hanya memberikan item yang relevan, tetapi juga mampu menempatkannya di posisi awal dalam daftar rekomendasi, yang penting untuk pengalaman pengguna.
 
-Model 2: Count Vectorization + Cosine Similarity
+### Model 2: Count Vectorization + Cosine Similarity
 
 Evaluasi dilakukan terhadap ground truth yang sama, yang dibuat menggunakan TF-IDF
 
