@@ -258,9 +258,7 @@ Sistem rekomendasi ini dievaluasi menggunakan metrik-metrik yang umum digunakan 
 1. **Precision\@K (P\@K)**
    Mengukur seberapa banyak dari *K* item yang direkomendasikan adalah benar-benar relevan.
 
-   $$
-   Precision@K = \frac{\text{Jumlah item relevan dalam top K}}{K}
-   $$
+   $$ Precision@K = \frac{\text{Jumlah item relevan dalam top K}}{K} $$
 
 2. **Recall\@K (R\@K)**
    Mengukur proporsi item relevan yang berhasil ditemukan dalam *K* rekomendasi.
