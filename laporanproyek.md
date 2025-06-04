@@ -13,7 +13,7 @@ Referensi:
 
 -----
 
-## **2. Business Understanding**
+## **Business Understanding**
 
 ### **Problem Statements**
 
