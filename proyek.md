@@ -29,13 +29,15 @@ Referensi:
 
 ### **Solution Approach**
 Untuk mencapai tujuan di atas, dua pendekatan solusi berbasis content-based filtering akan diimplementasikan dan dievaluasi:
-1. Pendekatan 1: TF-IDF Vectorization + Cosine Similarity
+* **Pendekatan 1:** TF-IDF Vectorization + Cosine Similarity
 Menggunakan Term Frequency-Inverse Document Frequency (TF-IDF) untuk mengubah fitur konten tekstual buku (judul, penulis, bahasa) menjadi representasi vektor numerik.
 Menggunakan metrik Cosine Similarity untuk menghitung kemiripan antara vektor-vektor buku dan menghasilkan rekomendasi.
-2. Pendekatan 2: Count Vectorization + Cosine Similarity
+* **Pendekatan 2:** Count Vectorization + Cosine Similarity
 Menggunakan Count Vectorization (termasuk N-grams) untuk mengubah fitur konten tekstual buku menjadi representasi vektor numerik berdasarkan frekuensi kata/frasa.
 Menggunakan metrik Cosine Similarity untuk menghitung kemiripan antara vektor-vektor buku dan menghasilkan rekomendasi.
+
 Kedua pendekatan ini akan dievaluasi menggunakan metrik yang sama untuk perbandingan kinerja.
+
 -----
 
 ## **Data Understanding**
@@ -69,7 +71,7 @@ Dataset ini mengandung informasi lengkap mengenai **11.119 buku** dan memiliki 2
 
 ### **Exploratory Data Analysis (EDA)**
 
-EDA dilakukan untuk memahami distribusi dan karakteristik dari setiap variabel penting dalam dataset, serta untuk mendapatkan **insight mendalam** yang akan memandu proses pra-pemrosesan dan pengembangan model.
+EDA dilakukan untuk memahami distribusi dan karakteristik dari setiap variabel penting dalam dataset, serta untuk mendapatkan insight mendalam yang akan memandu proses pra-pemrosesan dan pengembangan model.
 
 #### **Eksplorasi Variabel `title` dan `authors`**
 
@@ -98,8 +100,6 @@ Publishers seperti **Vintage, Penguin Books, dan Penguin Classic** menerbitkan j
 -----
 
 ## **Data Preparation**
-
-Tahap persiapan data sangat penting untuk memastikan data dalam format yang tepat dan bersih untuk pembangunan model. Proses ini melibatkan pemilihan fitur, pemfilteran data, dan penggabungan fitur. Setiap langkah dijelaskan dengan tujuannya.
 
 ### **Teknik Data Preparation yang Dilakukan:**
 
@@ -159,7 +159,7 @@ tfidf_matrix = vectorizer.fit_transform(df['combined_features'])
      * **Alasan:** TF-IDF membobot kata berdasarkan frekuensinya dalam satu dokumen (buku) dan frekuensi inversnya di seluruh korpus (kumpulan buku). Ini membantu menyoroti kata-kata yang penting dan khas untuk setiap buku.
 2). **Count Vectorization**
 
-CountVectorizer dari scikit-learn digunakan sebagai alternatif, menghasilkan count_matrix. Parameter yang digunakan meliputi stop_words='english', ngram_range=(1, 2) (untuk menangkap kata tunggal dan pasangan kata/bigram), dan min_df=2 (untuk mengabaikan term yang sangat jarang muncul).
+`CountVectorizer` dari scikit-learn mengubah fitur teks gabungan (`combined_features`) menjadi `count_matrix` numerik. Proses ini melibatkan tokenisasi teks menjadi kata tunggal (unigram) dan pasangan kata (bigram) sesuai `ngram_range=(1, 2)`, penghapusan kata umum bahasa Inggris (`stop_words='english'`), dan pengabaian token yang muncul di kurang dari dua dokumen (`min_df=2`). Hasilnya, setiap buku direpresentasikan sebagai vektor frekuensi dari token-token yang telah disaring ini, yang kemudian digunakan untuk menghitung kemiripan.
      
      * **Alasan:** Count Vectorization memberikan representasi berdasarkan frekuensi kemunculan kata/frasa. Penggunaan bigram dapat membantu menangkap konteks yang lebih baik daripada kata tunggal saja.
 -----
@@ -291,7 +291,7 @@ def recommend_books_count(title, cosine_sim=cosine_sim_count, df=df, k=10):
 Berikut adalah contoh rekomendasi untuk buku 'The Hobbit':
 
 ```python
-print("\nContent-Based Recommendations untuk 'The Hobbit':")
+print("\nCount-Based Recommendations untuk 'The Hobbit':")
 print(recommend_books('The Hobbit'))
 ```
 
