@@ -157,6 +157,7 @@ tfidf_matrix = vectorizer.fit_transform(df['combined_features'])
 `tfidf_matrix` sekarang berisi representasi numerik dari setiap buku, di mana setiap baris merepresentasikan sebuah buku dan setiap kolom merepresentasikan sebuah kata dengan bobot TF-IDF-nya.
 
   * **Alasan:** TF-IDF membobot kata berdasarkan frekuensinya dalam satu dokumen (buku) dan frekuensi inversnya di seluruh korpus (kumpulan buku). Ini membantu menyoroti kata-kata yang penting dan khas untuk setiap buku.
+
 2). **Count Vectorization**
 
 `CountVectorizer` dari scikit-learn mengubah fitur teks gabungan (`combined_features`) menjadi `count_matrix` numerik. Proses ini melibatkan tokenisasi teks menjadi kata tunggal (unigram) dan pasangan kata (bigram) sesuai `ngram_range=(1, 2)`, penghapusan kata umum bahasa Inggris (`stop_words='english'`), dan pengabaian token yang muncul di kurang dari dua dokumen (`min_df=2`). Hasilnya, setiap buku direpresentasikan sebagai vektor frekuensi dari token-token yang telah disaring ini, yang kemudian digunakan untuk menghitung kemiripan.
