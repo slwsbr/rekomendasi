@@ -103,7 +103,17 @@ Publishers seperti **Vintage, Penguin Books, dan Penguin Classic** menerbitkan j
 
 ### **Teknik Data Preparation yang Dilakukan:**
 
-1.  **Penghapusan Kolom Tidak Relevan:**
+1.  **Penghapusan Spasi pada Nama Kolom DataFrame:**
+
+      * **Teknik:** Menghapus spasi di awal dan akhir (leading/trailing spaces) dari setiap nama kolom dalam DataFrame.
+      * **Tujuan:** Tujuan utama dari langkah ini adalah untuk **menstandarisasi nama-nama kolom** dan memastikan konsistensi, khususnya untuk memperbaiki nama kolom seperti "  `num_pages`" menjadi "`num_pages`". Spasi yang tidak terlihat di awal atau akhir nama kolom dapat menyebabkan kesulitan saat mencoba mengakses kolom tersebut (misalnya, `df['  num_pages']` berbeda dengan `df['num_pages']`) dan dapat menimbulkan *error* yang sulit dilacak.
+      * **Implementasi:**
+    ```python
+    # Menghapus spasi di awal dan akhir dari setiap nama kolom
+    df.columns = df.columns.str.strip()
+    ```
+      * **Alasan:** Nama kolom seperti "  `num_pages`" yang mengandung spasi ekstra di awal adalah contoh nyata mengapa pembersihan nama kolom diperlukan. Spasi ini kemungkinan merupakan artefak dari proses impor data. Dengan melakukan `.str.strip()` pada `df.columns`, nama kolom yang tidak standar tersebut diperbaiki menjadi "`num_pages`", menghasilkan dataset yang lebih rapi, konsisten, dan mengurangi potensi *bug* atau kesalahan dalam penggunaan nama kolom di langkah-langkah berikutnya.
+2.  **Penghapusan Kolom Tidak Relevan:**
 
       * **Teknik:** Menghapus kolom `bookID`, `isbn`, `isbn13`, `num_pages`, `publication_date`, dan `publisher`.
       * **Tujuan:** Kolom-kolom ini dihapus karena **tidak mengandung informasi relevan** yang secara langsung berkontribusi pada kesamaan konten dalam sistem rekomendasi *content-based*. Misalnya, `bookID` atau `isbn` adalah identifikasi unik buku, bukan deskripsi konten. `num_pages`, `publication_date`, dan `publisher` meskipun merupakan atribut buku, tidak digunakan dalam definisi "konten" untuk sistem rekomendasi ini dan hanya akan membebani model dengan variabel yang tidak berguna atau mengurangi fokus pada karakteristik utama seperti judul, penulis, rating, dan ulasan teks.
@@ -112,7 +122,7 @@ Publishers seperti **Vintage, Penguin Books, dan Penguin Classic** menerbitkan j
         df.drop(columns=['bookID', 'isbn', 'isbn13','num_pages', 'publication_date','publisher'], inplace=True)
         ```
      * **Alasan:** Kolom-kolom ini dianggap tidak secara langsung berkontribusi pada fitur konten inti (judul, penulis, bahasa) yang akan digunakan untuk menghitung kemiripan dalam model content-based filtering ini. Penghapusan ini juga menyederhanakan dataset.
-2.  **Pemfilteran Buku Berdasarkan Bahasa:**
+3.  **Pemfilteran Buku Berdasarkan Bahasa:**
 
       * **Teknik:** Mempertahankan hanya buku dengan `language_code` 'en' atau 'eng'.
       * **Tujuan:** Seperti yang terlihat pada EDA, bahasa Inggris sangat mendominasi dataset. Pemfilteran ini dilakukan untuk **memastikan relevansi rekomendasi bagi pengguna berbahasa Inggris**, yang merupakan target utama dari sistem ini. Dengan fokus pada satu bahasa, kita **menghindari kompleksitas dan potensi *noise*** dari buku-buku dengan bahasa yang berbeda, yang mungkin tidak dipahami oleh mayoritas pengguna, sehingga **meningkatkan kualitas dan koherensi rekomendasi**.
@@ -122,7 +132,7 @@ Publishers seperti **Vintage, Penguin Books, dan Penguin Classic** menerbitkan j
         ```
       * **Alasan:** EDA menunjukkan mayoritas buku berbahasa Inggris. Pemfokusan pada satu bahasa ini bertujuan untuk meningkatkan relevansi rekomendasi bagi target pengguna utama dan mengurangi kompleksitas pemrosesan bahasa yang beragam.
 
-3.  **Penanganan Anomali `average_rating`:**
+4.  **Penanganan Anomali `average_rating`:**
 
       * **Teknik:** Memfilter buku dengan `average_rating` antara nilai valid (\>0 dan \<=5).
       * **Tujuan:** Meskipun EDA menunjukkan distribusi rating yang baik, beberapa entri mungkin memiliki nilai `average_rating` yang tidak logis (misalnya 0, atau nilai di luar rentang standar 1-5 yang umum digunakan pada platform rating). Pemfilteran ini dilakukan untuk **memastikan bahwa data rating yang digunakan valid dan konsisten**, sehingga tidak menimbulkan bias atau kesalahan dalam perhitungan kesamaan konten yang menggunakan rating sebagai salah satu fitur.
@@ -131,8 +141,8 @@ Publishers seperti **Vintage, Penguin Books, dan Penguin Classic** menerbitkan j
         df = df[(df['average_rating'] > 0) & (df['average_rating'] <= 5)]
       * **Alasan:** Untuk memastikan bahwa data rating yang digunakan konsisten dan logis, sehingga tidak menimbulkan bias atau error dalam analisis atau jika rating akan digunakan sebagai fitur (meskipun dalam implementasi akhir combined_features tidak menyertakannya secara eksplisit).        ```
 
-4.  **Pembentukan `combined_features`:**
-      * **Teknik:** Menggabungkan kolom `title`, `authors`, `language_code`, `average_rating`, `ratings_count`, dan `text_reviews_count` menjadi satu kolom teks baru bernama `combined_features`. Kolom numerik dikonversi ke string sebelum digabungkan.
+5.  **Pembentukan `combined_features`:**
+      * **Teknik:** Menggabungkan kolom `title`, `authors`, dan `language_code` menjadi satu kolom teks baru bernama `combined_features`. Kolom numerik dikonversi ke string sebelum digabungkan.
       * **Tujuan:** Langkah ini sangat krusial karena `TF-IDF Vectorizer` hanya dapat memproses data dalam format teks. Dengan menggabungkan beberapa fitur yang relevan menjadi satu string, kita membuat representasi komprehensif dari setiap buku yang akan menjadi dasar bagi *TF-IDF* untuk mengekstrak kata kunci dan konsep. Ini memungkinkan *TF-IDF* untuk menangkap kesamaan tidak hanya dari judul dan penulis tapi juga bahasa, yang semuanya berkontribusi pada definisi "konten" dalam konteks ini.
       * **Implementasi:**
         ```python
@@ -143,7 +153,7 @@ Publishers seperti **Vintage, Penguin Books, dan Penguin Classic** menerbitkan j
         )
         ```
      * **Alasan:** Untuk membuat representasi tekstual yang komprehensif dari setiap buku. Fitur gabungan inilah yang akan diproses oleh vectorizer untuk mengekstrak fitur numerik yang dapat dibandingkan.
-5. **Vectorization Fitur Teks** 
+6. **Vectorization Fitur Teks** 
 Dua teknik vectorization diterapkan pada combined_features untuk mengubah data teks menjadi format numerik yang dapat diproses oleh algoritma machine learning:
 
 1). **TF-IDF Vectorization**
